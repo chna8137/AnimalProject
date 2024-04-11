@@ -34,7 +34,7 @@ public class UserInfoController {
 
         log.info(this.getClass().getName() + ".userRegForm 컨트롤러 시작!");
 
-        return "/user/userRegForm";
+        return "user/userRegForm";
     }
 
     /**
@@ -193,6 +193,7 @@ public class UserInfoController {
         int res = 0; //로그인 처리 결과를 저장할 변수 (로그인 성공 : 1, 아이디, 비밀번호 불일치로인한 실패 : 0, 시스템 에러 : 2)
         String msg = ""; //로그인 결과에 대한 메시지를 전달할 변수
         MsgDTO dto = null; // 결과 메시지 구조
+        String url = "/index";
 
         //웹(회원정보 입력화면)에서 받는 정보를 저장할 변수
         UserInfoDTO pDTO = null;
@@ -233,16 +234,22 @@ public class UserInfoController {
             if (CmmUtil.nvl(rDTO.getUserId()).length() > 0) { //로그인 성공
 
                 res = 1;
+
+                log.info("SS_USER_ID : " + userId);
+                session.setAttribute("SS_USER_ID", userId);
+                log.info("세션에 저장 후 session.getAttribute(\"SS_USER_ID\") : " + session.getAttribute("SS_USER_ID"));
                 /*
                  * 세션에 회원아이디 저장하기, 추후 로그인여부를 체크하기 위해 세션에 값이 존재하는지 체크한다.
                  * 일반적으로 세션에 저장되는 키는 대문자로 입력하며, 앞에 SS를 붙인다.
                  *
                  * Session 단어에서 SS를 가져온 것이다.
                  */
-                msg = "로그인이 성공했습니다.";
+                msg = "로그인이 성공했습니다." + rDTO.getUserName() + "님 환영합니다.";
+                url = "/index";
 
-                session.setAttribute("SS_USER_ID", userId);
-                session.setAttribute("SS_USER_NAME", CmmUtil.nvl(rDTO.getUserName()));
+
+//                session.setAttribute("SS_USER_ID", userId);
+//                session.setAttribute("SS_USER_NAME", CmmUtil.nvl(rDTO.getUserName()));
 
             } else {
                 msg = "아이디와 비밀번호가 올바르지 않습니다.";
@@ -282,14 +289,14 @@ public class UserInfoController {
     /**
      * 아이디 찾기 화면
      * */
-    @GetMapping(value = "searchUserId")
-    public String searchUserId() {
+    @GetMapping(value = "findId")
+    public String findId() {
 
         log.info(this.getClass().getName() + ".searchUserId 서비스 시작!");
 
         log.info(this.getClass().getName() + ".searchUserId 서비스 끝!");
 
-        return "user/searchUserId";
+        return "user/findId";
     }
 
     /**
@@ -323,8 +330,8 @@ public class UserInfoController {
     /**
      * 비밀번호 찾기 화면
      */
-    @GetMapping(value = "searchPassword")
-    public String searchPassword(HttpSession session) {
+    @GetMapping(value = "findPassword")
+    public String findPassword(HttpSession session) {
         log.info(this.getClass().getName() + ".searchPassword 컨트롤러 시작!");
 
         // 강제 URL 입력 등 오는 경우가 있어 세션 삭제
@@ -334,7 +341,7 @@ public class UserInfoController {
 
         log.info(this.getClass().getName() + ".searchPassword 컨트롤러 끝!");
 
-        return "user/searchPassword";
+        return "user/findPassword";
 
     }
 

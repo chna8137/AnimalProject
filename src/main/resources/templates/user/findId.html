@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <title>아이디찾기</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/css/animate.css">
+
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/css/magnific-popup.css">
+
+
+    <link rel="stylesheet" href="/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="/css/jquery.timepicker.css">
+
+    <link rel="stylesheet" href="/css/flaticon.css">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+
+        a:hover {
+            text-decoration: none;
+            color: #AB4501;
+            outline: none !important;
+        }
+
+        .botton {
+            height: 50px;
+            width: 50%;
+            border-radius: 5px;
+            background: black;
+            color: white;
+            margin-left: 25%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .botton:hover {
+            color: black;
+            background-color: transparent;
+            border-color: black;
+        }
+
+        @media (max-width: 780px) {
+            .botton {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin-top: 0px;
+                margin-left: 0px;
+            }
+        }
+
+    </style>
+
+    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+
+        // HTML로딩이 완료되고, 실행됨
+        $(document).ready(function () {
+            let f = document.getElementById("f"); // form 태그
+            // 로그인 화면 이동
+            $("#btnLogin").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+                location.href = "/user/login";
+            })
+            // 아이디 찾기
+
+            $("#btnSearchUserId").on("click", function () {
+
+                if (f.userName.value === "") {
+                    alert("이름을 입력하세요.");
+                    f.userName.focus();
+                    return;
+                }
+                if (f.email.value === "") {
+                    alert("이메일을 입력하세요.");
+                    f.email.focus();
+                    return;
+                }
+                f.method = "post"; // 아이디 찾기 정보 전송 방식
+                f.action = "/user/searchUserIdProc" // 아이디 찾기 URL
+                f.submit(); // 아이디 찾기 정보 전송하기
+
+            })
+        })
+    </script>
+</head>
+<body>
+<form id="f">
+
+    <th:block th:replace="top"></th:block>
+
+    <section class="hero-wrap hero-wrap-2" style="background-image: url('/img/bg_2.jpg');"
+             data-stellar-background-ratio="0.5">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row no-gutters slider-text align-items-end">
+                <div class="col-md-9 ftco-animate pb-5">
+                    <p class="breadcrumbs mb-2"><span class="mr-2"><a href="index.html">Home <i
+                            class="ion-ios-arrow-forward"></i></a></span> <span>Contact <i
+                            class="ion-ios-arrow-forward"></i></span></p>
+                    <h1 class="mb-0 bread">Contact</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ftco-section bg-light">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-12">
+                    <div class="wrapper">
+                        <div class="row mb-5">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-3"></div>
+                            <div class="col-md-3"></div>
+                        </div>
+                        <div class="row no-gutters">
+                            <div class="col-md-7">
+                                <div class="contact-wrap w-100 p-md-5 p-4">
+                                    <h3 class="mb-4" style="font-weight: bold">아이디찾기</h3>
+                                    <form method="POST" id="contactForm" name="contactForm" class="contactForm">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="label" for="userId" style="color: #AB4501 !important; text-transform: uppercase; font-size: 12px; font-weight: 600">이름</label>
+                                                    <input type="text" class="form-control" name="userName" id="userId"
+                                                           placeholder="이름" style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="label" for="email" style="color: #AB4501 !important; text-transform: uppercase; font-size: 12px; font-weight: 600">이메일</label>
+                                                    <input type="email" class="form-control" name="email" id="email"
+                                                           placeholder="이메일" style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <button id="btnSearchUserId" class="botton" type="button">아이디찾기</button>
+                                                <div style="margin-top: 50px;">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="find" style="text-align: center;">
+                                                    <a id="btnLogin">로그인</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-md-5 d-flex align-items-stretch">
+                                <div class="info-wrap w-100 p-5 img" style="background-image: url(/img/img.jpg);">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+</body>
+</html>
