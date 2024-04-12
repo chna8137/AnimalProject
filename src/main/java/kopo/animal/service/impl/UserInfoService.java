@@ -180,7 +180,7 @@ public class UserInfoService implements IUserInfoService {
         log.info(this.getClass().getName() + ".newPasswordProc 서비스 시작!");
 
         // 비밀번호 재설정
-        int success =userInfoMapper.updatePassword(pDTO);
+        int success = userInfoMapper.updatePassword(pDTO);
 
         log.info(this.getClass().getName() + ".newPasswordProc 서비스 끝!");
 

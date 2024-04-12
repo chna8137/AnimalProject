@@ -378,7 +378,7 @@ public class UserInfoController {
 
         log.info(this.getClass().getName() + ".searchPasswordProc 컨트롤러 끝!");
 
-        return "user/newPassword";
+        return "user/newPasswordProc";
 
     }
 
@@ -397,15 +397,17 @@ public class UserInfoController {
         // 정상적인 접근인지 체크
         String newPassword = CmmUtil.nvl((String) session.getAttribute("NEW_PASSWORD"));
 
+        log.info("newPassword : " + newPassword);
+
         if (newPassword.length() > 0) { //정상 접근
 
-            String password = CmmUtil.nvl(request.getParameter("password")); // 신규 비밀번호
+            String userPassword = CmmUtil.nvl(request.getParameter("userPassword")); // 신규 비밀번호
 
-            log.info("password : " + password);
+            log.info("userPassword : " + userPassword);
 
             UserInfoDTO pDTO = new UserInfoDTO();
             pDTO.setUserId(newPassword);
-            pDTO.setPassword(EncryptUtil.encHashSHA256(password));
+            pDTO.setPassword(EncryptUtil.encHashSHA256(userPassword));
 
             userInfoService.newPasswordProc(pDTO);
 
