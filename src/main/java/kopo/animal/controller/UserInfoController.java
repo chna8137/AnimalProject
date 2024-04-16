@@ -401,13 +401,13 @@ public class UserInfoController {
 
         if (newPassword.length() > 0) { //정상 접근
 
-            String userPassword = CmmUtil.nvl(request.getParameter("userPassword")); // 신규 비밀번호
+            String password = CmmUtil.nvl(request.getParameter("password")); // 신규 비밀번호
 
-            log.info("userPassword : " + userPassword);
+            log.info("userPassword : " + password);
 
             UserInfoDTO pDTO = new UserInfoDTO();
             pDTO.setUserId(newPassword);
-            pDTO.setPassword(EncryptUtil.encHashSHA256(userPassword));
+            pDTO.setPassword(EncryptUtil.encHashSHA256(password));
 
             userInfoService.newPasswordProc(pDTO);
 

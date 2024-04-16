@@ -29,6 +29,8 @@ public class UserInfoDTO {
 
     private String chgDt;
 
+    private String url;
+
     // 회원가입시, 중복가입을 방지를 위해 사용할 변수
     private String existsYn;
     // 이메일 중복체크를 위한 중복체크
