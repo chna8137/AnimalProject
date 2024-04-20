@@ -1,81 +1,96 @@
+<div class="wrap">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 d-flex align-items-center">
+            </div>
+            <div class="col-md-6 d-flex justify-content-md-end">
+                <div class="social-media">
+                    <p class="mb-0 d-flex">
+
+                        <script th:inline="javascript">
+                            let isLoggedIn = [[${session['SS_USER_ID'] != null}]];
+                            let isNaverUser = [[${session['SS_USER_ID'] != null && session['SS_USER_ID'].startsWith('naver_')}]];
+
+                            // 로그인 상태에 따라 버튼 숨기기/표시
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var myPageButton = document.getElementById('myPage');
+                                if (isLoggedIn) {
+                                    myPageButton.style.display = 'block';
+                                } else {
+                                    myPageButton.style.display = 'none';
+                                }
+                            });
+
+                            // 페이지 로드 시 실행되는 코드
+                            document.addEventListener('DOMContentLoaded', function () {
+                                // 마이페이지 버튼 요소 찾기
+                                var myPageButton = document.getElementById('myPage');
+
+                                // 특정 아이디 패턴에 해당하는 경우 숨기기
+                                if (isNaverUser || !isLoggedIn) {
+                                    myPageButton.style.display = 'none';
+                                } else {
+                                    myPageButton.style.display = 'block';
+                                }
+                            });
+                        </script>
+
+                        <a th:unless="${session['SS_USER_ID'] != null}" class="d-flex align-items-center justify-content-center" href="/user/login" style="color: #0b0b0b">로그인</a>
+                        <a th:unless="${session['SS_USER_ID'] != null}" class="d-flex align-items-center justify-content-center" href="/user/userRegForm" style="color: #0b0b0b">회원가입</a>
+                        <a href="/user/profile" th:if="${session['SS_USER_ID'] != null}" class="d-flex align-items-center justify-content-center" style="color: #0b0b0b">마이페이지</a>
+                        <a th:if="${session['SS_USER_ID'] != null}" class="d-flex align-items-center justify-content-center" id="btnLogout" style="color: #0b0b0b">로그아웃</a>
+
+                        <script type="text/javascript">
+
+                            // 로그아웃 로직
+                            document.getElementById("btnLogout").addEventListener("click", function (event) {
+                                if (confirm("로그아웃 하시겠습니까?")) {
+
+                                    $.ajax({
+                                        url: "/user/logout",
+                                        type: "post",
+                                        dataType: "JSON",
+                                        success: function (json) {
+
+                                            if (json.result === 1) {
+                                                alert(json.msg);
+                                                window.location.href = "/index"; // 로그아웃 페이지로 이동
+                                            } else {
+                                                alert(json.msg);
+                                            }
+                                        }
+                                    })
+
+
+                                } else {
+
+                                    event.preventDefault(); // 기본 동작인 링크 이동을 취소
+                                }
+                            });
+                        </script>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
     <div class="container">
-        <a class="navbar-brand" href="index.html"><span class="flaticon-pawprint-1 mr-2"></span>이리ON</a>
+        <a class="navbar-brand" href="/index"><span class="flaticon-pawprint-1 mr-2"></span>이리ON</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav"
                 aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="fa fa-bars"></span> Menu
         </button>
         <div class="collapse navbar-collapse" id="ftco-nav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="/index" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="map.html" class="nav-link">지도</a></li>
                 <li class="nav-item"><a href="aniaml.html" class="nav-link">유기동물</a></li>
                 <li class="nav-item"><a href="chat.html" class="nav-link">채팅</a></li>
-                <li class="nav-item"><a href="noticeList.html" class="nav-link">공지사항</a></li>
-<!--                <li class="nav-item"><a href="/user/login" class="nav-link">로그인</a></li>-->
-<!--                <li class="nav-item"><a href="/user/logout" class="nav-link">로그아웃</a></li>-->
-
-                <script th:inline="javascript">
-                    let isLoggedIn = [[${session['SS_USER_ID'] != null}]];
-                    let isNaverUser = [[${session['SS_USER_ID'] != null && session['SS_USER_ID'].startsWith('naver_')}]];
-
-                    // 로그인 상태에 따라 버튼 숨기기/표시
-                    document.addEventListener('DOMContentLoaded', function () {
-                        var myPageButton = document.getElementById('myPage');
-                        if (isLoggedIn) {
-                            myPageButton.style.display = 'block';
-                        } else {
-                            myPageButton.style.display = 'none';
-                        }
-                    });
-
-                    // 페이지 로드 시 실행되는 코드
-                    document.addEventListener('DOMContentLoaded', function () {
-                        // 마이페이지 버튼 요소 찾기
-                        var myPageButton = document.getElementById('myPage');
-
-                        // 특정 아이디 패턴에 해당하는 경우 숨기기
-                        if (isNaverUser || !isLoggedIn) {
-                            myPageButton.style.display = 'none';
-                        } else {
-                            myPageButton.style.display = 'block';
-                        }
-                    });
-                </script>
-
-                <li th:if="${session['SS_USER_ID'] != null}"><a class="nav-item" id="btnLogout">로그아웃</a></li>
-                <li th:unless="${session['SS_USER_ID'] != null}"><a class="nav-item" th:href="@{/user/login}">로그인</a></li>
+                <li class="nav-item"><a href="/notice/noticeList" class="nav-link">공지사항</a></li>
 
 
-                <script type="text/javascript">
-
-                    // 로그아웃 로직
-                    document.getElementById("btnLogout").addEventListener("click", function (event) {
-                        if (confirm("로그아웃 하시겠습니까?")) {
-
-                            $.ajax({
-                                url : "/user/logout",
-                                type: "post",
-                                dataType: "JSON",
-                                success: function (json){
-
-                                    if (json.result === 1) {
-                                        alert(json.msg);
-                                        window.location.href = "/index"; // 로그아웃 페이지로 이동
-                                    } else {
-                                        alert(json.msg);
-                                    }
-                                }
-                            })
-
-
-
-                        } else {
-
-                            event.preventDefault(); // 기본 동작인 링크 이동을 취소
-                        }
-                    });
-                </script>
             </ul>
         </div>
     </div>

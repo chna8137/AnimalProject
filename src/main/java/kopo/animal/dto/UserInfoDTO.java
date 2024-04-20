@@ -3,9 +3,11 @@ package kopo.animal.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class UserInfoDTO {
 
@@ -29,7 +31,7 @@ public class UserInfoDTO {
 
     private String chgDt;
 
-    private String url;
+    private String image; // 프로필 이미지
 
     // 회원가입시, 중복가입을 방지를 위해 사용할 변수
     private String existsYn;

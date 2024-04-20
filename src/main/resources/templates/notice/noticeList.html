@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Pet Sitting - Free Bootstrap 4 Template by Colorlib</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/css/animate.css">
+
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/css/magnific-popup.css">
+
+
+    <link rel="stylesheet" href="/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="/css/jquery.timepicker.css">
+
+    <link rel="stylesheet" href="/css/flaticon.css">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+
+        .botton {
+            height: 50px;
+            width: 50%;
+            border-radius: 5px;
+            background: black;
+            color: white;
+            margin-left: 25%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .botton:hover {
+            color: black;
+            background-color: transparent;
+            border-color: black;
+        }
+
+        @media (max-width: 780px) {
+            .botton {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin-top: 0px;
+                margin-left: 0px;
+            }
+        }
+
+    </style>
+
+    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+
+        //상세보기 이동
+        function doDetail(seq) {
+            location.href = "/notice/noticeInfo?nSeq=" + seq;
+        }
+
+        // 공지사항 작성 이동
+        $(document).ready(function () {
+            $("#btnNotice").on("click", function () {
+                location.href = "/notice/noticeReg"
+            })
+        })
+
+    </script>
+
+</head>
+<body>
+<!-- 헤더 메뉴 부분 -->
+<th:block th:replace="top"></th:block>
+
+<!-- END nav -->
+<section class="hero-wrap hero-wrap-2" style="background-image: url('/img/bg_2.jpg');"
+         data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-end">
+            <div class="col-md-9 ftco-animate pb-5">
+                <p class="breadcrumbs mb-2"><span class="mr-2"><a href="index.html">Home <i
+                        class="ion-ios-arrow-forward"></i></a></span> <span>Blog <i
+                        class="ion-ios-arrow-forward"></i></span></p>
+                <h1 class="mb-0 bread">Blog</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section bg-light">
+    <div class="container">
+        <div class="row d-flex">
+            <div class="col-md-4 d-flex ftco-animate" th:each="dto: ${rList}">
+                <div class="blog-entry align-self-stretch">
+                    <a href="blog-single.html" class="block-20 rounded"
+                       style="background-image: url('/img/image_1.jpg');">
+                    </a>
+                    <div class="text p-4">
+                        <div class="meta mb-2">
+                            <div><a th:text="${dto.regDt}"></a></div>
+                            <div><a th:text="${dto.userName}"></a></div>
+                            <div><a th:text="${dto.readCnt}"></a></div>
+                            <!--                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>-->
+                            <h3 class="heading"><a th:text="${dto.title}"
+                                                   th:onclick="doDetail([[${dto.noticeSeq}]])"></a></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <button id=btnNotice class="botton" type="button">글쓰기</button>
+    </div>
+<!--    <a href="/notice/noticeReg">글쓰기</a>-->
+
+    <!-- 페이지 네이션 부분 -->
+    <div class="row mt-5">
+        <div class="col text-center">
+            <div class="block-27" th:href="@{/notice/noticeList(page=1)}">
+                <ul>
+                    <li th:if="${currentPage > 1}">
+                        <a th:href="@{/notice/noticeList(page=${currentPage - 1})}">&lt;</a></li>
+
+                    <li class="active" th:each="pageNumber : ${#numbers.sequence(1, totalPages)}"
+                        th:class="${pageNumber == currentPage ? 'active' : ''}">
+                    <a th:href="@{/notice/noticeList(page=${pageNumber})}"
+                          th:text="${pageNumber}"></a></li>
+
+                    <li th:if="${currentPage < totalPages}">
+                        <a th:href="@{/notice/noticeList(page=${currentPage + 1})}">&gt;</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- 페이지 네이션 끝부분-->
+
+</section>
+
+<!-- footer 부분 -->
+<th:block th:replace="footer"></th:block>
+
+
+
+<!-- loader -->
+<div id="ftco-loader" class="show fullscreen">
+    <svg class="circular" width="48px" height="48px">
+        <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/>
+        <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10"
+                stroke="#F96D00"/>
+    </svg>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/jquery-migrate-3.0.1.min.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.easing.1.3.js"></script>
+<script src="/js/jquery.waypoints.min.js"></script>
+<script src="/js/jquery.stellar.min.js"></script>
+<script src="/js/jquery.animateNumber.min.js"></script>
+<script src="/js/bootstrap-datepicker.js"></script>
+<script src="/js/jquery.timepicker.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/scrollax.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+<script src="/js/google-map.js"></script>
+<script src="/js/main.js"></script>
+
+
+</body>
+</html>

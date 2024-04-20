@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import kopo.animal.dto.MsgDTO;
 import kopo.animal.dto.UserInfoDTO;
+import kopo.animal.service.IFileService;
+import kopo.animal.service.IS3Service;
 import kopo.animal.service.IUserInfoService;
 import kopo.animal.util.CmmUtil;
 import kopo.animal.util.EncryptUtil;
