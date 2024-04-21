@@ -144,17 +144,20 @@ public class profileController {
 
             String userId = CmmUtil.nvl((String) session.getAttribute("SS_USER_ID"));
             String userName = CmmUtil.nvl(request.getParameter("userName"));
+            String nickname = CmmUtil.nvl(request.getParameter("nickname"));
             String addr1 = CmmUtil.nvl(request.getParameter("addr1"));
             String addr2 = CmmUtil.nvl(request.getParameter("addr2"));
 
             log.info("userId : " + userId);
             log.info("userName : " + userName);
+            log.info("nickname : " + nickname);
             log.info("addr1 : " + addr1);
             log.info("addr2 : " + addr2);
 
             UserInfoDTO pDTO = new UserInfoDTO();
             pDTO.setUserId(userId);
             pDTO.setUserName(userName);
+            pDTO.setNickname(nickname);
             pDTO.setAddr1(addr1);
             pDTO.setAddr2(addr2);
 

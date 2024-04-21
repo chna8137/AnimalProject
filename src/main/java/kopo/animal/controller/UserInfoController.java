@@ -64,6 +64,29 @@ public class UserInfoController {
     }
 
     /**
+     * 회원가입 전 아이디 중복체크하기(Ajax를 통해 입력한 아이디 정보 받음)
+     */
+    @ResponseBody
+    @PostMapping(value = "getNicknameExists")
+    public UserInfoDTO getNicknameExists(HttpServletRequest request) throws Exception {
+
+        log.info(".controller 닉네임 중복체크 실행");
+
+        String nickname = CmmUtil.nvl(request.getParameter("nickname")); // 아이디
+
+        log.info("nickname : " + nickname);
+
+        UserInfoDTO pDTO = new UserInfoDTO();
+        pDTO.setNickname(nickname);
+
+        UserInfoDTO rDTO = Optional.ofNullable(userInfoService.getNicknameExists(pDTO)).orElseGet(UserInfoDTO::new);
+
+        log.info(".controller 아이디 중복체크 종료");
+
+        return rDTO;
+    }
+
+    /**
      * 회원가입 전 이메일 중복체크하기(Ajax를 통해 입력한 아이디 정보 받음)
      * 유효한 이메일인지 확인하기 위해 입력된 이메일에 인증번호 포함하여 메일 발송
      */
@@ -108,6 +131,7 @@ public class UserInfoController {
          *  */
         String userId = CmmUtil.nvl(request.getParameter("userId")); // 아이디
         String userName = CmmUtil.nvl(request.getParameter("userName")); // 이름
+        String nickname = CmmUtil.nvl(request.getParameter("nickname")); // 이름
         String password = CmmUtil.nvl(request.getParameter("password")); // 비밀번호
         String email = CmmUtil.nvl(request.getParameter("email")); // 이메일
         String addr1 = CmmUtil.nvl(request.getParameter("addr1")); // 주소
@@ -123,6 +147,7 @@ public class UserInfoController {
 
         log.info("userId : " + userId);
         log.info("userName : " + userName);
+        log.info("nickname : " + nickname);
         log.info("password : " + password);
         log.info("email : " + email);
         log.info("addr1 : " + addr1);
@@ -138,6 +163,7 @@ public class UserInfoController {
         UserInfoDTO pDTO = new UserInfoDTO();
         pDTO.setUserId(userId);
         pDTO.setUserName(userName);
+        pDTO.setNickname(nickname);
         pDTO.setPassword(EncryptUtil.encHashSHA256(password));
         pDTO.setEmail(EncryptUtil.encAES128CBC(email));
         pDTO.setAddr1(addr1);
@@ -290,7 +316,7 @@ public class UserInfoController {
 
     /**
      * 아이디 찾기 화면
-     * */
+     */
     @GetMapping(value = "findId")
     public String findId() {
 
@@ -303,30 +329,65 @@ public class UserInfoController {
 
     /**
      * 아이디 찾기 로직 수행
-     * */
+     */
+    @ResponseBody
     @PostMapping(value = "searchUserIdProc")
-    public String searchUserIdProc(HttpServletRequest request, ModelMap model) throws Exception {
+    public MsgDTO searchUserIdProc(HttpServletRequest request, ModelMap model, HttpSession session) throws Exception {
 
         log.info(this.getClass().getName() + ".searchUserIdProc 서비스 시작!");
 
-        String userName = CmmUtil.nvl(request.getParameter("userName"));
-        String email = CmmUtil.nvl(request.getParameter("email"));
+        int res = 0; //로그인 처리 결과를 저장할 변수 (로그인 성공 : 1, 아이디, 비밀번호 불일치로인한 실패 : 0, 시스템 에러 : 2)
+        String msg = ""; //로그인 결과에 대한 메시지를 전달할 변수
+        MsgDTO dto = null; // 결과 메시지 구조
+        String url = "/index";
 
-        log.info("userName : " + userName);
-        log.info("email : " + email);
+        try {
 
-        UserInfoDTO pDTO = new UserInfoDTO();
-        pDTO.setUserName(userName);
-        pDTO.setEmail(EncryptUtil.encAES128CBC(email));
+            String userName = CmmUtil.nvl(request.getParameter("userName"));
+            String email = CmmUtil.nvl(request.getParameter("email"));
 
-        UserInfoDTO rDTO = Optional.ofNullable(userInfoService.searchUserIdOrPasswordProc(pDTO))
-                .orElseGet(UserInfoDTO::new);
+            log.info("userName : " + userName);
+            log.info("email : " + email);
 
-        model.addAttribute("rDTO", rDTO);
+            UserInfoDTO pDTO = new UserInfoDTO();
+            pDTO.setUserName(userName);
+            pDTO.setEmail(EncryptUtil.encAES128CBC(email));
+
+            UserInfoDTO rDTO = Optional.ofNullable(userInfoService.searchUserIdOrPasswordProc(pDTO))
+                    .orElseGet(UserInfoDTO::new);
+
+//            model.addAttribute("rDTO", rDTO);
+
+            if ((rDTO.getUserName() == null || !rDTO.getUserName().equals(userName)) &&
+                    (rDTO.getEmail() == null || !rDTO.getEmail().equals(email))) {
+
+                msg = "해당하는 사용자를 찾을 수 없습니다.";
+
+            } else {
+                res = 1;
+
+                session.setAttribute("SS_USER_NAME", userName);
+                msg = rDTO.getUserName() + "님의 아이디는 " + rDTO.getUserId() + "입니다.";
+                url = "/index";
+            }
+        }catch (Exception e) {
+                //저장이 실패되면 사용자에게 보여줄 메시지
+                msg = "시스템 문제로 로그인이 실패했습니다.";
+                res = 2;
+                log.info(e.toString());
+                e.printStackTrace();
+
+            } finally {
+                // 결과 메시지 전달하기
+                dto = new MsgDTO();
+                dto.setResult(res);
+                dto.setMsg(msg);
+        }
+
 
         log.info(this.getClass().getName() + ".searchUserIdProc 서비스 끝!");
 
-        return "user/searchUserIdResult";
+        return dto;
     }
 
     /**
@@ -434,7 +495,7 @@ public class UserInfoController {
 
     /**
      * 로그아웃 처리
-     * */
+     */
     @ResponseBody
     @PostMapping(value = "logout")
     public MsgDTO logout(HttpSession session) {

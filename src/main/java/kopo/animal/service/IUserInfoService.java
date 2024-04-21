@@ -7,6 +7,9 @@ public interface IUserInfoService {
     // 아이디 중복 체크
     UserInfoDTO getUserIdExists(UserInfoDTO pDTO) throws Exception;
 
+    //닉네임 중복체크 하기 (DB 조회)
+    UserInfoDTO getNicknameExists(UserInfoDTO pDTO) throws Exception;
+
     // 이메일 중복 체크 및 인증 값
     UserInfoDTO getEmailExists(UserInfoDTO pDTO) throws Exception;
 

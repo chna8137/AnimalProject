@@ -9,6 +9,9 @@ public interface IUserInfoMapper {
     // 회원 가입 전 아이디 중복체크하기(DB조회하기)
     UserInfoDTO getUserIdExists(UserInfoDTO pDTO) throws Exception;
 
+    // 닉네임 중복체크 하기 (DB 조회)
+    UserInfoDTO getNicknameExists(UserInfoDTO pDTO) throws Exception;
+
     // 회원 가입 전 이메일 중복체크하기(DB조회하기)
     UserInfoDTO getEmailExists(UserInfoDTO pDTO) throws Exception;
 

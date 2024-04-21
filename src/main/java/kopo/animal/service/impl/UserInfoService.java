@@ -25,6 +25,7 @@ public class UserInfoService implements IUserInfoService {
 
     private final IMailService mailService; // 메일 발송을 위한 MailService 자바 객체 가져오기
 
+    // 아이디 중복체크
     @Override
     public UserInfoDTO getUserIdExists(UserInfoDTO pDTO) throws Exception {
 
@@ -37,6 +38,15 @@ public class UserInfoService implements IUserInfoService {
         log.info(this.getClass().getName() + ".getUserIdExists 서비스 종료!");
 
         return rDTO;
+    }
+
+    // 닉네임 중복체크
+    @Override
+    public UserInfoDTO getNicknameExists(UserInfoDTO pDTO) throws Exception {
+
+        log.info(".service 닉네임 중복체크 실행");
+
+        return userInfoMapper.getNicknameExists(pDTO);
     }
 
     @Override

@@ -121,6 +121,11 @@
         // HTML로딩이 완료되고, 실행됨
         $(document).ready(function () {
             let f = document.getElementById("f"); // form 태그
+
+            // 닉네임 중복체크
+            $("#btnNickname").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+                nicknameExists(f);
+            })
             // 우편번호 찾기
             $("#btnAddr").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
                 kakaoPost(f);
@@ -147,6 +152,37 @@
                 preview(arr);
             });
         })
+
+        // 닉네임 중복 체크
+        function nicknameExists(f) {
+
+            if (f.nickname.value === "") {
+                alert("닉네임를 입력하세요.");
+                f.nickname.focus();
+                return;
+            }
+
+            // Ajax 호출해서 회원가입하기
+            $.ajax({
+                    url: "/user/getNicknameExists",
+                    type: "post", // 전송방식은 Post
+                    dataType: "JSON", // 전송 결과는 JSON으로 받기
+                    data: $("#f").serialize(), // form 태그 내 input 등 객체를 자동으로 전송할 형태로 변경하기
+                    success: function (json) { // 호출이 성공했다면..
+
+                        if (json.existsYn === "Y") {
+                            alert("이미 가입된 닉네임이 존재합니다.");
+                            f.userId.focus();
+
+                        } else {
+                            alert("사용 가능한 닉네임입니다.");
+                            userIdCheck = "N";
+                        }
+
+                    }
+                }
+            )
+        }
 
         // 파일 확인
         function checkExtension(fileName, fileSize) {
@@ -228,9 +264,9 @@
 
         //회원가입 정보의 유효성 체크하기
         function doSubmit(f) {
-            if (f.userName.value === "") {
-                alert("이름을 입력하세요.")
-                f.userName.focus();
+            if (f.nickname.value === "") {
+                alert("닉네임을 입력하세요.");
+                f.nickname.focus();
                 return;
             }
             if (f.addr1.value === "") {
@@ -253,7 +289,7 @@
 
             // let formData = new FormData($("#f")[0]);
             let formData = new FormData();
-            formData.append('userName', f.userName.value);
+            formData.append('nickname', f.nickname.value);
             formData.append('addr1', f.addr1.value);
             formData.append('addr2', f.addr2.value);
             // 이미지 파일들을 formData에 추가
@@ -348,10 +384,27 @@
                                         <label class="label" for="userName"
                                                style="color: #AB4501 !important; text-transform: uppercase; font-size: 12px; font-weight: 600">이름</label>
                                         <input type="text" class="form-control" name="userName" id="userName"
-                                               th:placeholder="${rDTO.userName}"
+                                               th:placeholder="${rDTO.userName}" disabled=""
+                                               style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0; background-color: #F5F5F5 !important;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 services-2 w-100 d-flex">
+                            <!--                        <div class="icon d-flex align-items-center justify-content-center"><span class="flaticon-emergency-call"></span></div>-->
+                            <div class="text pl-3">
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="label" for="nickname"
+                                               style="color: #AB4501 !important; text-transform: uppercase; font-size: 12px; font-weight: 600">닉네임</label>
+                                        <input type="text" class="form-control" name="nickname" id="nickname"
+                                               th:placeholder="${rDTO.nickname}"
                                                style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
                                     </div>
                                 </div>
+                                <button id="btnNickname" type="button" class="button" style="margin: 0;">닉네임확인</button>
                             </div>
                         </div>
 

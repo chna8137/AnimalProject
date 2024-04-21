@@ -5,7 +5,7 @@
 
     <!-- 마이페이지 정보 조회-->
     <select id="getProfile" parameterType="UserInfoDTO" resultType="UserInfoDTO">
-        SELECT USER_ID, USER_NAME, EMAIL, ADDR1, ADDR2
+        SELECT USER_ID, USER_NAME, NICKNAME, EMAIL, ADDR1, ADDR2
         FROM USER_INFO
         WHERE USER_ID = #{userId}
     </select>
@@ -13,7 +13,7 @@
     <!-- 마이페이지 정보 수정 -->
     <update id="updateProfile" parameterType="UserInfoDTO">
         UPDATE USER_INFO
-        SET USER_NAME = #{userName},
+        SET NICKNAME = #{nickname},
             ADDR1 = #{addr1},
             ADDR2 = #{addr2}
         WHERE USER_ID = #{userId}

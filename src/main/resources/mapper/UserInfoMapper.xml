@@ -10,6 +10,16 @@
         WHERE USER_ID = #{userId}
     </select>
 
+    <!-- 닉네임 중복체크 -->
+    <select id="getNicknameExists" parameterType="UserInfoDTO" resultType="UserInfoDTO">
+        SELECT CASE
+                   WHEN COUNT(1) = 0 THEN 'N'
+                   ELSE 'Y'
+                   END AS EXISTS_YN
+        FROM USER_INFO
+        WHERE NICKNAME = #{nickname}
+    </select>
+
     <!-- 회원 가입 전 이메일 중복체크하기 -->
     <select id="getEmailExists" parameterType="UserInfoDTO" resultType="UserInfoDTO">
         SELECT CASE WHEN COUNT(1) = 0 THEN 'N' ELSE 'Y' END AS EXISTS_YN
@@ -22,6 +32,7 @@
         INSERT INTO USER_INFO
         (USER_ID,
          USER_NAME,
+         NICKNAME,
          PASSWORD,
          EMAIL,
          ADDR1,
@@ -32,6 +43,7 @@
          CHG_DT)
         VALUES (#{userId},
                 #{userName},
+                #{nickname},
                 #{password},
                 #{email},
                 #{addr1},

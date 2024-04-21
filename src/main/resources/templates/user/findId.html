@@ -85,9 +85,27 @@
                     f.email.focus();
                     return;
                 }
-                f.method = "post"; // 아이디 찾기 정보 전송 방식
-                f.action = "/user/searchUserIdProc" // 아이디 찾기 URL
-                f.submit(); // 아이디 찾기 정보 전송하기
+
+                // Ajax 호출해서 로그인하기
+                $.ajax({
+                        url: "/user/searchUserIdProc",
+                        type: "post", // 전송방식은 Post
+                        dataType: "JSON", // 전송 결과는 JSON으로 받기
+                        data: $("#f").serialize(), // form 태그 내 input 등 객체를 자동으로 전송할 형태로 변경하기
+                        success: function (json) { // /notice/noticeUpdate 호출이 성공했다면..
+                            if (json.result === 1) { // 로그인 성공
+                                alert(json.msg); // 메시지 띄우기
+                                location.href = "/index"; // 로그인 성공 페이지 이동
+                            } else { // 로그인 실패
+                                alert(json.msg); // 메시지 띄우기
+                                $("#userName").focus(); // 아이디 입력 항목에 마우스 커서 이동
+                            }
+                        }
+                    }
+                )
+                // f.method = "post"; // 아이디 찾기 정보 전송 방식
+                // f.action = "/user/searchUserIdProc" // 아이디 찾기 URL
+                // f.submit(); // 아이디 찾기 정보 전송하기
 
             })
         })
@@ -98,7 +116,7 @@
 
     <th:block th:replace="top"></th:block>
 
-    <section class="hero-wrap hero-wrap-2" style="background-image: url('/img/bg_2.jpg');"
+    <section class="hero-wrap hero-wrap-2" style="background-image: url('/img/밥줘개순.jpg');"
              data-stellar-background-ratio="0.5">
         <div class="overlay"></div>
         <div class="container">
@@ -161,7 +179,7 @@
                                 </div>
                             </div>
                             <div class="col-md-5 d-flex align-items-stretch">
-                                <div class="info-wrap w-100 p-5 img" style="background-image: url(/img/img.jpg);">
+                                <div class="info-wrap w-100 p-5 img" style="background-image: url(/img/이불개순.jpg);">
                                 </div>
                             </div>
                         </div>
