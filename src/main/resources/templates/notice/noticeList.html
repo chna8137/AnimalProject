@@ -79,7 +79,7 @@
 <th:block th:replace="top"></th:block>
 
 <!-- END nav -->
-<section class="hero-wrap hero-wrap-2" style="background-image: url('/img/bg_2.jpg');"
+<section class="hero-wrap hero-wrap-2" style="background-image: url('/img/바나나개순.jpg');"
          data-stellar-background-ratio="0.5">
     <div class="overlay"></div>
     <div class="container">
@@ -97,15 +97,15 @@
 <section class="ftco-section bg-light">
     <div class="container">
         <div class="row d-flex">
-            <div class="col-md-4 d-flex ftco-animate" th:each="dto: ${rList}">
+            <div class="col-md-4 ftco-animate" th:each="dto: ${rList}">
                 <div class="blog-entry align-self-stretch">
                     <a href="blog-single.html" class="block-20 rounded"
-                       style="background-image: url('/img/image_1.jpg');">
+                       style="background-image: url('/img/알록달록개순.jpg');">
                     </a>
                     <div class="text p-4">
                         <div class="meta mb-2">
                             <div><a th:text="${dto.regDt}"></a></div>
-                            <div><a th:text="${dto.userName}"></a></div>
+                            <div><a th:text="${dto.nickname}"></a></div>
                             <div><a th:text="${dto.readCnt}"></a></div>
                             <!--                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>-->
                             <h3 class="heading"><a th:text="${dto.title}"

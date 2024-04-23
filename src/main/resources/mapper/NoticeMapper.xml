@@ -11,6 +11,7 @@
                N.NOTICE_YN,
                N.READ_CNT,
                U.USER_NAME,
+               COALESCE(U.NICKNAME, '탈퇴한 사용자') AS NICKNAME,
                N.USER_ID,
                DATE_FORMAT(N.REG_DT, '%y-%m-%d') AS REG_DT
         FROM NOTICE N,
@@ -32,7 +33,7 @@
 
     <!-- 게시판 상세보기 쿼리 -->
     <select id="getNoticeInfo" resultType="NoticeDTO">
-        SELECT N.NOTICE_SEQ, N.TITLE, N.NOTICE_YN, N.READ_CNT, U.USER_NAME, N.USER_ID,
+        SELECT N.NOTICE_SEQ, N.TITLE, N.NOTICE_YN, N.READ_CNT, U.USER_NAME, COALESCE(U.NICKNAME, '탈퇴한 사용자') AS NICKNAME, N.USER_ID,
                CONTENTS, DATE_FORMAT(N.REG_DT, '%y-%m-%d') AS REG_DT
         FROM NOTICE N, USER_INFO U
         WHERE N.USER_ID = U.USER_ID
