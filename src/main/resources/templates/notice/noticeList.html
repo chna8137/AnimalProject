@@ -57,19 +57,32 @@
     </style>
 
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript">
+    <script th:inline="javascript">
 
         //상세보기 이동
         function doDetail(seq) {
             location.href = "/notice/noticeInfo?nSeq=" + seq;
         }
 
+        const ssUserId = [[${session.SS_USER_ID}]]; // Controller에서 받은 세션에 저장된 값
+        const userId = [[${rDTO.userId}]]; // 공지사항 게시글 작성자 아이디
+        const nSeq = [[${rDTO.noticeSeq}]]; // 현재 글번호, 자바에서 받을 변수들은 자바스크립트 변수로 저장하면 편함
+
         // 공지사항 작성 이동
         $(document).ready(function () {
             $("#btnNotice").on("click", function () {
-                location.href = "/notice/noticeReg"
+                doWrite();
+                // location.href = "/notice/noticeReg"
             })
         })
+
+        function doWrite() {
+            if (ssUserId !== null && ssUserId !== undefined) {
+                window.location.href = "/notice/noticeReg"
+            } else {
+                alert("로그인 후 이용 가능합니다.")
+            }
+        }
 
     </script>
 
@@ -120,7 +133,7 @@
     <div class="col-md-12">
         <button id=btnNotice class="botton" type="button">글쓰기</button>
     </div>
-<!--    <a href="/notice/noticeReg">글쓰기</a>-->
+    <!--    <a href="/notice/noticeReg">글쓰기</a>-->
 
     <!-- 페이지 네이션 부분 -->
     <div class="row mt-5">
@@ -132,8 +145,8 @@
 
                     <li class="active" th:each="pageNumber : ${#numbers.sequence(1, totalPages)}"
                         th:class="${pageNumber == currentPage ? 'active' : ''}">
-                    <a th:href="@{/notice/noticeList(page=${pageNumber})}"
-                          th:text="${pageNumber}"></a></li>
+                        <a th:href="@{/notice/noticeList(page=${pageNumber})}"
+                           th:text="${pageNumber}"></a></li>
 
                     <li th:if="${currentPage < totalPages}">
                         <a th:href="@{/notice/noticeList(page=${currentPage + 1})}">&gt;</a></li>
@@ -147,7 +160,6 @@
 
 <!-- footer 부분 -->
 <th:block th:replace="footer"></th:block>
-
 
 
 <!-- loader -->

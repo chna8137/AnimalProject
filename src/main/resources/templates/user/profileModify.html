@@ -25,23 +25,23 @@
 
     <style>
 
-
-        #file-input {
-            display: none;
+        /* 둥근 네모 영역 스타일 */
+        .profile-picture {
+            width: 300px; /* 원하는 사이즈로 설정 */
+            height: 300px; /* 원하는 사이즈로 설정 */
+            border-radius: 30%; /* 둥근 모서리 */
+            border: 2px solid #ccc; /* 기본 테두리 */
+            overflow: hidden; /* 넘치는 부분 잘라내기 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        #preview {
-            margin-top: 20px;
-        }
-
-        .preview-image {
-            margin-right: 10px;
-            margin-bottom: 10px;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #ddd;
+        /* 이미지 스타일 */
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 이미지 비율 유지 및 잘라내기 */
         }
 
         a:hover {
@@ -138,7 +138,12 @@
                 preview(e.target.files);
             });
 
-            $("input[type='file']").change(function (e){
+            $("#file-input").change(function (e) {
+                removePreviousImage();
+                preview(e.target.files);
+            });
+
+            $("input[type='file']").change(function (e) {
 
                 var files = e.target.files;
                 arr = Array.prototype.slice.call(files);
@@ -203,12 +208,15 @@
             return true;
         }
 
+        // 이전 이미지 삭제 함수
+        function removePreviousImage() {
+            $(".profile-picture").empty(); // 이전 이미지를 포함한 모든 요소 삭제
+        }
 
-        // 미리보기
+
+        // 이미지 미리보기 함수
         function preview(files) {
-            var preview = document.getElementById('preview');
-            preview.innerHTML = ''; // 이미지를 추가하기 전에 미리보기 영역 비우기
-
+            var preview = document.getElementsByClassName('profile-picture')[0]; // 프로필 사진을 감싸는 div
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
                 var imageType = /^image\//;
@@ -233,12 +241,11 @@
                 reader.readAsDataURL(file);
             }
         }
-
         // 이미지 삭제
         function removeImage(button) {
             let fileName = $(button).val();
 
-            arr = arr.filter(function(file) {
+            arr = arr.filter(function (file) {
                 return file.name !== fileName;
             });
 
@@ -328,7 +335,7 @@
 
 
     <!-- END nav -->
-    <section class="hero-wrap hero-wrap-2" style="background-image: url('/img/bg_2.jpg');"
+    <section class="hero-wrap hero-wrap-2" style="background-image: url('/img/노란꼬까개순.jpg');"
              data-stellar-background-ratio="0.5">
         <div class="overlay"></div>
         <div class="container">
@@ -346,14 +353,20 @@
     <section class="ftco-section ftco-no-pt ftco-no-pb">
         <div class="container">
             <div class="row d-flex no-gutters">
-                <div class="col-md-4 d-flex">
+                <div class="col-md-4 d-flex" style="place-items: center; height: 80vh;">
                     <div class="container">
+                        <div class="profile-picture">
+                            <div th:if="${rList != null and not #lists.isEmpty(rList)}">
+                                <div th:each="dto : ${rList}">
+                                    <img th:if="${dto.fileUrl != null}" th:src="${dto.fileUrl}" width="100%" alt="Image">
+                                    <img th:if="${dto.fileUrl == null}" src="/img/profile.png" width="100%" alt="Default Image">
+                                    <br><br>
+                                </div>
+                            </div>
+                            <div id="preview"></div>
+                        </div>
+                        <input id="file-input" type="file" multiple style="margin-top: 20px; margin-left: 12%">
 
-                        <label for="file-input" class="custom-file-upload">
-                            <i class="fa fa-cloud-upload"></i> 프로필 이미지 선택
-                        </label>
-                        <input id="file-input" type="file" multiple>
-                        <div id="preview"></div>
                     </div>
 
                 </div>
@@ -400,8 +413,9 @@
                                         <label class="label" for="nickname"
                                                style="color: #AB4501 !important; text-transform: uppercase; font-size: 12px; font-weight: 600">닉네임</label>
                                         <input type="text" class="form-control" name="nickname" id="nickname"
-                                               th:placeholder="${rDTO.nickname}"
-                                               style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
+                                               placeholder="닉네임을 입력해주세요"
+                                               th:value="${rDTO.nickname}"
+                                               style="border: none; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding: 0;">
                                     </div>
                                 </div>
                                 <button id="btnNickname" type="button" class="button" style="margin: 0;">닉네임확인</button>
@@ -431,8 +445,9 @@
                                         <label class="label" for="addr1"
                                                style="color: #AB4501 !important; text-transform: uppercase; font-size: 12px; font-weight: 600">주소</label>
                                         <input type="text" class="form-control" name="addr1" id="addr1"
-                                               th:placeholder="${rDTO.addr1}"
-                                               style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
+                                               placeholder="주소을 입력해주세요"
+                                               th:value="${rDTO.addr1}"
+                                               style="border: none; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding: 0;">
                                     </div>
                                 </div>
                                 <button id="btnAddr" type="button" class="button" style="margin: 0;">우편번호</button>
@@ -446,8 +461,9 @@
                                         <label class="label" for="addr2"
                                                style="color: #AB4501 !important; text-transform: uppercase; font-size: 12px; font-weight: 600">상세주소</label>
                                         <input type="text" class="form-control" name="addr2" id="addr2"
-                                               th:placeholder="${rDTO.addr2}"
-                                               style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
+                                               placeholder="상세주소을 입력해주세요"
+                                               th:value="${rDTO.addr2}"
+                                               style="border: none; border-bottom: 1px solid rgba(0, 0, 0, 0.1); padding: 0;">
                                     </div>
                                 </div>
                             </div>

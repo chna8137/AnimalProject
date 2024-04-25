@@ -1,17 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>게시판 글쓰기</title>
-    <link rel="stylesheet" href="/css/table.css"/>
+    <title>Pet Sitting - Free Bootstrap 4 Template by Colorlib</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/css/animate.css">
+
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/css/magnific-popup.css">
+
+
+    <link rel="stylesheet" href="/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="/css/jquery.timepicker.css">
+
+    <link rel="stylesheet" href="/css/flaticon.css">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+
+        .bttn {
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1px;
+            padding: 10px;
+            height: 100px;
+        }
+
+        .botton {
+            height: 50px;
+            width: 20%;
+            border-radius: 5px;
+            background: black;
+            color: white;
+            margin-left: 5%;
+
+        }
+
+        .botton:hover {
+            color: black;
+            background-color: transparent;
+            border-color: black;
+        }
+
+
+
+        @media (max-width: 780px) {
+
+            .bttn {
+                flex-direction: column;
+            }
+
+            .botton {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin-top: 5px;
+                margin-left: 0px;
+            }
+        }
+
+    </style>
+
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript">
+    <script th:inline="javascript">
+
 
         // HTML로딩이 완료되고, 실행됨
         $(document).ready(function () {
             // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
             $("#btnSend").on("click", function () {
-                doSubmit(); // 공지사항 등록하기 실행
+                doSubmit(); // 공지사항 수정하기 실행
             })
         })
 
@@ -47,18 +150,18 @@
                 f.title.focus();
                 return;
             }
-            let noticeCheck = false; //체크 여부 확인 변수
-            for (let i = 0; i < f.noticeYn.length; i++) {
-                if (f.noticeYn[i].checked) {
-                    noticeCheck = true;
-                    break;
-                }
-            }
-            if (noticeCheck === false) {
-                alert("공지글 여부를 선택하시기 바랍니다.");
-                f.noticeYn[0].focus();
-                return;
-            }
+            // let noticeCheck = false; //체크 여부 확인 변수
+            // for (let i = 0; i < f.noticeYn.length; i++) {
+            //     if (f.noticeYn[i].checked) {
+            //         noticeCheck = true;
+            //         break;
+            //     }
+            // }
+            // if (noticeCheck === false) {
+            //     alert("공지글 여부를 선택하시기 바랍니다.");
+            //     f.noticeYn[0].focus();
+            //     return;
+            // }
             if (f.contents.value === "") {
                 alert("내용을 입력하시기 바랍니다.");
                 f.contents.focus();
@@ -84,49 +187,85 @@
                 }
             )
         }
+
     </script>
 </head>
 <body>
-<h2>공지사항 등록하기</h2>
-<hr/>
-<br/>
-<form name="f" id="f">
-    <div class="divTable minimalistBlack">
-        <div class="divTableBody">
-            <div class="divTableRow">
-                <div class="divTableCell">제목
-                </div>
-                <div class="divTableCell">
-                    <input type="text" name="title" maxlength="100" style="width: 95%"/>
-                </div>
-            </div>
-            <div class="divTableRow">
-                <div class="divTableCell">공지글 여부
-                </div>
-                <div class="divTableCell">
-                    예<input type="radio" name="noticeYn" value="Y"/>
-                    아니오<input type="radio" name="noticeYn" value="N"/>
-                </div>
-            </div>
-            <div class="divTableRow">
-                <div class="divTableCell">조회수
-                </div>
-                <div class="divTableCell">
-                </div>
-            </div>
-            <div class="divTableRow">
-                <div class="divTableCell">내용
-                </div>
-                <div class="divTableCell">
-                    <textarea name="contents" style="width: 95%; height: 400px"></textarea>
-                </div>
+
+<!-- 헤더 메뉴 부분 -->
+<th:block th:replace="top"></th:block>
+
+
+<!-- END nav -->
+<section class="hero-wrap hero-wrap-2" style="background-image: url('/img/바나나개순.jpg');"
+         data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-end">
+            <div class="col-md-9 ftco-animate pb-5">
+                <p class="breadcrumbs mb-2"><span class="mr-2"><a href="index.html">Home <i
+                        class="ion-ios-arrow-forward"></i></a></span> <span class="mr-2"><a href="blog.html">Blog <i
+                        class="ion-ios-arrow-forward"></i></a></span> <span>Blog Single <i
+                        class="ion-ios-arrow-forward"></i></span></p>
+                <h1 class="mb-0 bread">Blog</h1>
             </div>
         </div>
     </div>
-    <div>
-        <button id="btnSend" type="button">등록</button>
-        <button type="reset">다시 작성</button>
+</section>
+
+<section class="ftco-section ftco-degree-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 ftco-animate">
+                <form name="f" id="f">
+                    <input type="hidden" name="nSeq"/>
+
+                    <label for="title">제목:</label>
+                    <input type="text" id="title" name="title" required>
+
+                    <label for="contents">내용:</label>
+                    <textarea id="contents" name="contents" rows="6" required style="resize: none; height:450px;"></textarea>
+
+                    <div class="bttn">
+                        <button id="btnSend" class="botton" type="button">등록</button>
+                        <button class="botton" type="reset">리셋</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-</form>
+</section> <!-- .section -->
+
+<!-- footer 부분 -->
+<th:block th:replace="footer"></th:block>
+
+<!-- loader -->
+<div id="ftco-loader" class="show fullscreen">
+    <svg class="circular" width="48px" height="48px">
+        <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/>
+        <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10"
+                stroke="#F96D00"/>
+    </svg>
+</div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/jquery-migrate-3.0.1.min.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.easing.1.3.js"></script>
+<script src="/js/jquery.waypoints.min.js"></script>
+<script src="/js/jquery.stellar.min.js"></script>
+<script src="/js/jquery.animateNumber.min.js"></script>
+<script src="/js/bootstrap-datepicker.js"></script>
+<script src="/js/jquery.timepicker.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/scrollax.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+<script src="/js/google-map.js"></script>
+<script src="/js/main.js"></script>
+
+
 </body>
 </html>
