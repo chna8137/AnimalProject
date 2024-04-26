@@ -370,18 +370,18 @@ public class UserInfoController {
                 msg = rDTO.getUserName() + "님의 아이디는 " + rDTO.getUserId() + "입니다.";
                 url = "/index";
             }
-        }catch (Exception e) {
-                //저장이 실패되면 사용자에게 보여줄 메시지
-                msg = "시스템 문제로 로그인이 실패했습니다.";
-                res = 2;
-                log.info(e.toString());
-                e.printStackTrace();
+        } catch (Exception e) {
+            //저장이 실패되면 사용자에게 보여줄 메시지
+            msg = "시스템 문제로 로그인이 실패했습니다.";
+            res = 2;
+            log.info(e.toString());
+            e.printStackTrace();
 
-            } finally {
-                // 결과 메시지 전달하기
-                dto = new MsgDTO();
-                dto.setResult(res);
-                dto.setMsg(msg);
+        } finally {
+            // 결과 메시지 전달하기
+            dto = new MsgDTO();
+            dto.setResult(res);
+            dto.setMsg(msg);
         }
 
 
@@ -434,6 +434,7 @@ public class UserInfoController {
         UserInfoDTO rDTO = Optional.ofNullable(userInfoService.searchUserIdOrPasswordProc(pDTO)).orElseGet(UserInfoDTO::new);
 
         model.addAttribute("rDTO", rDTO);
+
 
         // 비밀번호 재생성하는 화면은 보안을 위해 반드시 NEW_PASSWORD 세션이 존재해야 접속 가능하도록 구현
         // userId 값을 넣은 이유는 비밀번호 재설정하는 newPasswordProc 함수에서 사용하기 위함
@@ -489,7 +490,7 @@ public class UserInfoController {
 
         log.info(this.getClass().getName() + ".user/newPasswordProc End!");
 
-        return "user/newPasswordResult";
+        return "/index";
 
     }
 
