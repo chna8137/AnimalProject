@@ -19,7 +19,7 @@
         })
 
         // 전체 채팅방 리스트 가져오기
-        function getRommList() {
+        function getRoomList() {
 
             // Ajax 호출
             $.ajax({
@@ -29,10 +29,10 @@
                 success: function (json) {
 
                     // 기존 데이터 삭제하기
-                    $("#room_list").empty();
+                    $("#roomList").empty();
 
                     for (let i = 0; i < json.length; i++) {
-                        $("#room_list").append(json[i] + "<br/>"); // 채팅방마다 한줄씩 추가
+                        $("#roomList").append(json[i] + "<br/>"); // 채팅방마다 한줄씩 추가
                     }
                 }
             })
@@ -49,7 +49,7 @@
     </div>
     <div class="divTableBody">
         <div class="divTableRow">
-            <div class="divTableCell" id="room_list"></div>
+            <div class="divTableCell" id="roomList"></div>
         </div>
     </div>
 </div>
@@ -67,7 +67,7 @@
                 </div>
                 <div class="divTableCell">대화명(별명)</div>
                 <div class="divTableCell">
-                    <input type="text" name="userName">
+                    <input type="text" name="nickname">
                 </div>
             </div>
         </div>

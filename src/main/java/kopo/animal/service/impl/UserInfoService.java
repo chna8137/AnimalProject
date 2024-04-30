@@ -196,4 +196,12 @@ public class UserInfoService implements IUserInfoService {
 
         return success;
     }
+
+    @Override
+    public UserInfoDTO getNickname(UserInfoDTO pDTO) throws Exception {
+
+        log.info(".service 유저명 가져오기 실행");
+
+        return userInfoMapper.getNickname(pDTO);
+    }
 }

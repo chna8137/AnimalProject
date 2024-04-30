@@ -99,4 +99,11 @@
         SET PASSWORD = #{password}
         WHERE USER_ID = #{userId}
     </update>
+
+    <!-- 닉네임 가져오기 -->
+    <select id="getNickname" resultType="UserInfoDTO" parameterType="UserInfoDTO">
+        SELECT USER_ID, NICKNAME, USER_NAME
+        FROM USER_INFO
+        WHERE USER_ID = #{userId}
+    </select>
 </mapper>

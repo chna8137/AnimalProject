@@ -38,11 +38,11 @@ public class ChatHandler extends TextWebSocketHandler {
         log.info(this.getClass().getName() + ".채팅 접속 핸들러 시작!");
 
         String roomName = CmmUtil.nvl((String) session.getAttributes().get("roomName"));
-        String userName = CmmUtil.nvl((String) session.getAttributes().get("userName"));
+        String nickname = CmmUtil.nvl((String) session.getAttributes().get("nickname"));
         String roomNameHash = CmmUtil.nvl((String) session.getAttributes().get("roomNameHash"));
 
         log.info("roomName : " + roomName);
-        log.info("userName : " + userName);
+        log.info("nickname : " + nickname);
         log.info("roomNameHash : " + roomNameHash);
 
         // 웹소켓에 접속된 모든 사용자 검색
@@ -56,7 +56,7 @@ public class ChatHandler extends TextWebSocketHandler {
                     // {"name":"권은아", "msg":"ㅇㅎ","date":"2024.04.26.오후 03:15:23"}
                     ChatDTO cDTO = new ChatDTO();
                     cDTO.setName("관리자");
-                    cDTO.setMsg(userName + "님이" + roomName + "채팅방에 입장하셨습니다.");
+                    cDTO.setMsg(nickname + "님이" + roomName + "채팅방에 입장하셨습니다.");
                     cDTO.setDate(DateUtil.getDateTime("yyyyMMdd hh:mm:ss"));
 
                     String json = new ObjectMapper().writeValueAsString(cDTO);
@@ -99,11 +99,11 @@ public class ChatHandler extends TextWebSocketHandler {
         log.info(this.getClass().getName() + "채팅 접속 해제 핸들러 시작!");
 
         String roomName = CmmUtil.nvl((String) session.getAttributes().get("roomName"));
-        String userName = CmmUtil.nvl((String) session.getAttributes().get("userName"));
+        String nickname = CmmUtil.nvl((String) session.getAttributes().get("nickname"));
         String roomNameHash = CmmUtil.nvl((String) session.getAttributes().get("roomNameHash"));
 
         log.info("roomName : " + roomName);
-        log.info("userName : " + userName);
+        log.info("nickname : " + nickname);
         log.info("roomNameHash : " + roomNameHash);
 
         clients.remove(session); // 접속되어있는 세션 삭제
@@ -118,7 +118,7 @@ public class ChatHandler extends TextWebSocketHandler {
                    // {"name":"권은아", "msg":"ㅇㅎ","date":"2024.04.26.오후 03:15:23"}
                     ChatDTO cDTO = new ChatDTO();
                     cDTO.setName("관리자");
-                    cDTO.setMsg(userName + "님이" + roomName + "채팅방에 퇴장하셨습니다.");
+                    cDTO.setMsg(nickname + "님이" + roomName + "채팅방에 퇴장하셨습니다.");
                     cDTO.setDate(DateUtil.getDateTime("yyyy-MM-dd hh:mm:ss"));
 
                     String json = new ObjectMapper().writeValueAsString(cDTO);
@@ -143,11 +143,11 @@ public class ChatHandler extends TextWebSocketHandler {
         log.info(this.getClass().getName() + "채팅 발송 핸들러 시작!");
 
         String roomName = CmmUtil.nvl((String) session.getAttributes().get("roomName"));
-        String userName = CmmUtil.nvl((String) session.getAttributes().get("userName"));
+        String nickname = CmmUtil.nvl((String) session.getAttributes().get("nickname"));
         String roomNameHash = CmmUtil.nvl((String) session.getAttributes().get("roomNameHash"));
 
         log.info("roomName : " + roomName);
-        log.info("userName : " + userName);
+        log.info("nickname : " + nickname);
         log.info("roomNameHash : " + roomNameHash);
 
         // 채팅 메시지

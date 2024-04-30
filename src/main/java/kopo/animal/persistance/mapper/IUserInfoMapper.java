@@ -36,4 +36,8 @@ public interface IUserInfoMapper {
 
     // 임시 비밀번호 생성 후 메일 전송
     int updatePassword(UserInfoDTO pDTO) throws Exception;
+
+    /* 이름 가져오기 */
+    UserInfoDTO getNickname(UserInfoDTO pDTO) throws Exception;
+
 }
