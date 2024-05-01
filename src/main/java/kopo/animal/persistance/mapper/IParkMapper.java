@@ -6,5 +6,12 @@ import java.util.List;
 
 public interface IParkMapper {
 
-    List<ParkDTO> getParkInfo(String colNm, ParkDTO parkDTO) throws Exception;
+
+    /**
+     * 지도
+     *
+     * @param colNm 조회할 컬렉션 이름
+     * @return 지도 리스트
+     */
+    List<ParkDTO> getParkInfo(String colNm) throws Exception;
 }
