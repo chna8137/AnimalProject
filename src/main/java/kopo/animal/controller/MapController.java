@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -16,15 +18,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@RequestMapping(value = "/map/v1")
+@RequestMapping(value = "/map")
 @RequiredArgsConstructor
-@RestController
-public class ParkController {
+@Controller
+public class MapController {
 
     private final IParkService parkService;
 
     /** 수집된 공원 리스트 가져오기 */
-    @PostMapping(value = "getParkInfo")
+    @ResponseBody
+    @GetMapping(value = "/v1/getParkInfo")
     public ResponseEntity getParkInfo() throws Exception {
 
         log.info(this.getClass().getName() + ".controller 공원정보 시작!");
@@ -35,6 +38,17 @@ public class ParkController {
         log.info(this.getClass().getName() + ".controller 공원정보 종료!");
 
         return ResponseEntity.ok(
-                CommonResponse.of(HttpStatus.OK, HttpStatus.OK.series().name(), rList));
+                        CommonResponse.of(HttpStatus.OK, HttpStatus.OK.series().name(), rList));
     }
+
+    @GetMapping(value = "park")
+    public String park() throws Exception {
+
+        log.info(this.getClass().getName() + ".controller 공원정보 시작!");
+
+        log.info(this.getClass().getName() + ".controller 공원정보 종료!");
+
+        return "map/park";
+    }
+
 }
