@@ -2,7 +2,6 @@ package kopo.animal.persistance.mapper.impl;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import kopo.animal.dto.MongoDTO;
 import kopo.animal.dto.ParkDTO;
 import kopo.animal.persistance.mapper.AbstractMongoDBComon;
 import kopo.animal.persistance.mapper.IParkMapper;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
 import java.util.List;
+
 
 @Slf4j
 @Component
@@ -36,13 +36,13 @@ public class ParkMapper extends AbstractMongoDBComon implements IParkMapper {
 
         // 조회 결과 중 출력할 컬럼들(SQL의 SELECT절과 FROM절 가운데 컬럼들과 유사함)
         Document projection = new Document();
-        projection.append("wlkCoursFlagNm", "$wlkCoursFlagNm");
-        projection.append("coursDc", "$coursDc");
-        projection.append("signguNm", "$signguNm");
-        projection.append("coursLtCn", "$coursLtCn");
-        projection.append("lnmAddr", "$lnmAddr");
-        projection.append("coursSpotLa", "$coursSpotLa");
-        projection.append("coursSpotLo", "$coursSpotLo");
+        projection.append("wlkCoursFlagNm", "$WLK_COURS_FLAG_NM");
+        projection.append("coursDc", "$COURS_DC");
+        projection.append("signguNm", "$SIGNGU_NM");
+        projection.append("coursLtCn", "$COURS_LT_CN");
+        projection.append("lnmAddr", "$LNM_ADDR");
+        projection.append("coursSpotLa", "$COURS_SPOT_LA");
+        projection.append("coursSpotLo", "$COURS_SPOT_LO");
 
         // MongoDB는 무조건 ObjectId가 자동생성되며, ObjectID는 사용하지 않을때, 조회할 필요가 없음
         // ObjectId는 가지고 오지 않을 때 사용함

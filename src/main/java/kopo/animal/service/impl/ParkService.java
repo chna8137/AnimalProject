@@ -23,9 +23,11 @@ public class ParkService implements IParkService {
         log.info(this.getClass().getName() + ".service 공원정보 조회하기 시작!");
 
         // MongoDB에 저장된 컬렉션 이름
-        String colNm = "PARK_" + DateUtil.getDateTime("yyyyMMdd");
+        String colNm = "ANIMAL_PARK_MAP";
 
         List<ParkDTO> rList = parkMapper.getParkInfo(colNm); // MongoDB에서 데이터 가져오기
+
+//        log.info("rList : " + rList);
 
         log.info(this.getClass().getName() + ".service 공원정보 조회하기 종료!");
 

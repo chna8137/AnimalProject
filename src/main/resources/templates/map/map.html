@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/table.css"/>
+    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+    <script th:inline="javascript">
+
+        // HTML로딩이 완료되고, 실행됨
+        $(document).ready(function () {
+            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            $("#btnPark").on("click", function () {
+                doPark(); // 공지사항 수정하기 실행
+            })
+        })
+
+        function doPark() {
+            let f = document.getElementById("f"); // form 태그
+
+            // Ajax 호출해서 글 등록하기
+            $.ajax({
+                url: "/map/v1/getParkInfo",
+                type: "post", // 전송방식은 Post
+                dataType: "JSON", // 전송 결과는 JSON으로 받기
+
+            }).then(
+                function (json) {
+                    const result = json.data;
+
+                    for (const data of result) {
+                        $("#parkData").append("<div class=\"divTableRow\">");
+                        $("#parkData").append("<div class=\"divTableCell\">" + data.wlkCoursFlagNm + "</div>");
+                        $("#parkData").append("<div class=\"divTableCell\">" + data.signguNm + "</div>");
+                        $("#parkData").append("<div class=\"divTableCell\">" + data.lnmAddr + "</div>");
+                        $("#parkData").append("</div>");
+                    }
+                }
+            )
+        }
+
+
+    </script>
+</head>
+<body>
+<h2>안녕하세요?</h2>
+<form id="f">
+    <button id="btnPark" type="button">공원</button>
+    <div class="divTable minimalistBlack">
+        <div class="divTableHeading">
+            <div class="divTableCell">산책경로구분명</div>
+            <div class="divTableCell">시군구명</div>
+            <div class="divTableCell">지번 주소</div>
+        </div>
+        <div class="divTableBody" id="parkData"></div>
+    </div>
+</form>
+</body>
+</html>
