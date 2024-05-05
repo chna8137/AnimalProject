@@ -18,16 +18,15 @@ public class ParkService implements IParkService {
     private final IParkMapper parkMapper;
 
     @Override
-    public List<ParkDTO> getParkInfo() throws Exception {
+    public List<ParkDTO> getParkInfo(int page, int itemsPerPage) throws Exception {
 
         log.info(this.getClass().getName() + ".service 공원정보 조회하기 시작!");
 
         // MongoDB에 저장된 컬렉션 이름
         String colNm = "ANIMAL_PARK_MAP";
 
-        List<ParkDTO> rList = parkMapper.getParkInfo(colNm); // MongoDB에서 데이터 가져오기
-
-//        log.info("rList : " + rList);
+        // 매퍼를 통해 공원 정보 가져오기
+        List<ParkDTO> rList = parkMapper.getParkInfo(colNm, page, itemsPerPage);
 
         log.info(this.getClass().getName() + ".service 공원정보 조회하기 종료!");
 

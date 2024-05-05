@@ -37,17 +37,14 @@ public class MapController {
     /**
      * 수집된 공원 리스트 가져오기
      */
-//    @ResponseBody
     @PostMapping(value = "/v1/getParkInfo")
-    public ResponseEntity getParkInfo() throws Exception {
+    public ResponseEntity getParkInfo(@RequestParam(defaultValue = "1") int page,
+                                      @RequestParam(defaultValue = "20") int itemsPerPage) throws Exception {
 
         log.info(this.getClass().getName() + ".controller getParkInfo 시작!");
 
-
-        List<ParkDTO> rList = Optional.ofNullable(parkService.getParkInfo())
+        List<ParkDTO> rList = Optional.ofNullable(parkService.getParkInfo(page, itemsPerPage))
                 .orElseGet(ArrayList::new);
-
-//        log.info("rList : " + rList);
 
         log.info(this.getClass().getName() + ".controller getParkInfo 종료!");
 
