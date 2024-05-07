@@ -2,6 +2,7 @@ package kopo.animal.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 
 
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
@@ -15,6 +16,8 @@ public record ParkDTO(
         String coursLtCn, // 경로 길이 내용
         String lnmAddr, // 지번 주소
         String coursSpotLa, // 경로지점위도
-        String coursSpotLo // 경로지점경도
+        String coursSpotLo, // 경로지점경도
+        GeoJsonPoint location, // 위도, 경도 묶은거
+        Double range // 반경
 ) {
 }
