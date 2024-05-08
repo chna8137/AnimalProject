@@ -13,5 +13,5 @@ public interface IParkMapper {
      * @param colNm 조회할 컬렉션 이름
      * @return 지도 리스트
      */
-    List<ParkDTO> getParkInfo(String colNm, int page, int itemsPerPage) throws Exception;
+    List<ParkDTO> getParkInfo(String colNm, int page, int itemsPerPage, ParkDTO pDTO) throws Exception;
 }

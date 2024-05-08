@@ -4,30 +4,6 @@
     <meta charset="UTF-8">
     <title>공원 정보</title>
     <link rel="stylesheet" href="/css/table.css"/>
-    <style>
-        /* 페이지네이션 스타일 */
-        #pagination {
-            margin-top: 20px;
-        }
-
-        #pagination button {
-            border: 1px solid #ddd;
-            background-color: #f9f9f9;
-            color: #555;
-            padding: 8px 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        #pagination button:hover {
-            background-color: #ddd;
-        }
-
-        #pagination button.active {
-            background-color: #007bff;
-            color: #fff;
-        }
-    </style>
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
     <div id="map" style="width:40%;height:300px;position:relative;overflow:hidden; margin-left: 20%"></div>
     <script type="text/javascript"
@@ -37,166 +13,21 @@
         var mapContainer = document.getElementById('map'), // 지도를 표시할 div
             mapOption = {
                 center: new kakao.maps.LatLng(37.54982267371823, 126.84233877714716), // 지도의 중심좌표
-                level: 100 // 지도의 확대 레벨
+                level: 8 // 지도의 확대 레벨
             };
 
         var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
-
-        var currentPage = 1;
-        const itemsPerPage = 20;
-        var markers = []; // 마커를 저장할 배열
-
-        // HTML로딩이 완료되고, 실행됨
-        $(document).ready(function () {
-            // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
-            $("#btnPark").on("click", function () {
-                currentPage = 1; // 페이지를 다시 1로 설정
-                doPark(currentPage, itemsPerPage);
-            })
-        })
-
-        function doPark(page, itemsPerPage) {
-            let f = document.getElementById("f"); // form 태그
-
-            // Ajax 호출해서 공원 정보 가져오기
-            $.ajax({
-                url: "/map/v1/getParkInfo",
-                type: "post", // 전송방식은 Post
-                data: {
-                    page: page,
-                    itemsPerPage: itemsPerPage
-                },
-                dataType: "JSON", // 전송 결과는 JSON으로 받기
-            }).then(
-                function (json) {
-                    const dataList = json.data;
-                    $("#parkData").empty();
-                    markers.forEach(marker => marker.setMap(null)); // 이전 페이지의 마커 삭제
-                    markers = []; // 배열 비우기
-                    var positions = [];
-                    const startIndex = (page - 1) * itemsPerPage;
-                    const endIndex = startIndex + itemsPerPage;
-                    for (let i = startIndex; i < endIndex && i < dataList.length; i++) {
-                        const data = dataList[i];
-                        const $row = $("<div class=\"divTableRow\">" +
-                            "<div class=\"divTableCell\">" + data.wlkCoursFlagNm + "</div>" +
-                            "<div class=\"divTableCell\">" + data.signguNm + "</div>" +
-                            "<div class=\"divTableCell\">" + data.lnmAddr + "</div>" +
-                            "</div>");
-
-                        // 클릭 이벤트 핸들러 추가
-                        const markerIndex = markers.length; // 현재 마커의 인덱스 저장
-                        $row.on("click", function () {
-                            map.panTo(positions[markerIndex].latlng); // 해당 항목의 위치로 지도 이동
-                        });
-
-                        $("#parkData").append($row);
-
-                        positions.push({
-                            content: '<div>' + data.wlkCoursFlagNm + '</div>',
-                            latlng: new kakao.maps.LatLng(data.coursSpotLa, data.coursSpotLo)
-                        });
-                    }
-
-                    // 지도에 마커 표시
-                    for (var i = 0; i < positions.length; i++) {
-                        var marker = new kakao.maps.Marker({
-                            map: map,
-                            position: positions[i].latlng
-                        });
-                        markers.push(marker); // 배열에 마커 추가
-
-                        var infowindow = new kakao.maps.InfoWindow({
-                            content: positions[i].content
-                        });
-
-                        // 마커 클릭 시 해당 위치로 지도 이동
-                        kakao.maps.event.addListener(marker, 'click', (function (marker, i) {
-                            return function () {
-                                map.panTo(marker.getPosition());
-                            }
-                        })(marker, i));
-
-                        kakao.maps.event.addListener(marker, 'mouseover', makeOverListener(map, marker, infowindow));
-                        kakao.maps.event.addListener(marker, 'mouseout', makeOutListener(infowindow));
-                    }
-
-                    // 페이지네이션 업데이트
-                    let totalPage = Math.ceil(dataList.length / itemsPerPage); // 전체 페이지 수 계산
-                    updatePagination(totalPage);
-                }
-            )
-        }
-
-
-        // 인포윈도우를 표시하는 클로저를 만드는 함수입니다
-        function makeOverListener(map, marker, infowindow) {
-            return function () {
-                infowindow.open(map, marker);
-            };
-        }
-
-        // 인포윈도우를 닫는 클로저를 만드는 함수입니다
-        function makeOutListener(infowindow) {
-            return function () {
-                infowindow.close();
-            };
-        }
-
-        // 페이지네이션 업데이트 함수
-        function updatePagination(totalPages) {
-            const pagination = $("#pagination");
-            pagination.empty();
-
-            if (currentPage > 1) {
-                pagination.append("<button id='first'>First</button>");
-                pagination.append("<button id='prev'>Previous</button>");
-            }
-
-            // 최대 5개까지만 버튼 표시
-            let startPage = Math.max(1, currentPage - 2);
-            let endPage = Math.min(startPage + 4, totalPages);
-
-            for (let i = startPage; i <= endPage; i++) {
-                if (i === currentPage) {
-                    pagination.append("<button class='active'>" + i + "</button>");
-                } else {
-                    pagination.append("<button>" + i + "</button>");
-                }
-            }
-
-            if (currentPage < totalPages) {
-                pagination.append("<button id='next'>Next</button>");
-                pagination.append("<button id='last'>Last</button>");
-            }
-
-            // 페이지 버튼 클릭 이벤트
-            $("#pagination button").on("click", function () {
-                const btnText = $(this).text();
-                if (btnText === "First") {
-                    currentPage = 1;
-                } else if (btnText === "Last") {
-                    currentPage = totalPages;
-                } else if (btnText === "Previous") {
-                    if (currentPage > 1) {
-                        currentPage--;
-                    }
-                } else if (btnText === "Next") {
-                    if (currentPage < totalPages) {
-                        currentPage++;
-                    }
-                } else {
-                    currentPage = parseInt(btnText);
-                }
-                doPark(currentPage, itemsPerPage);
-            });
-        }
     </script>
+    <script type="text/javascript" src="/js/park.js"></script>
+    <script type="text/javascript" src="/js/culture.js"></script>
+    <script type="text/javascript" src="/js/hospital.js"></script>
 
 </head>
 <body>
 <h2>안녕하세요?</h2>
 <button id="btnPark" type="button">공원</button>
+<button id="btnCulture" type="button">문화시설</button>
+<button id="btnHospital" type="button">동물병원</button>
 <div class="divTable minimalistBlack">
     <div class="divTableHeading">
         <div class="divTableCell">산책경로구분명</div>
@@ -204,7 +35,8 @@
         <div class="divTableCell">지번 주소</div>
     </div>
     <div class="divTableBody" id="parkData"></div>
-    <div id="pagination"></div> <!-- 페이지네이션 영역 -->
+    <div class="divTableBody" id="cultureData"></div>
+    <div class="divTableBody" id="hospitalData"></div>
 </div>
 <form id="f">
 </form>

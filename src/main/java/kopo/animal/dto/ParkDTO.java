@@ -17,7 +17,7 @@ public record ParkDTO(
         String lnmAddr, // 지번 주소
         String coursSpotLa, // 경로지점위도
         String coursSpotLo, // 경로지점경도
-        GeoJsonPoint location, // 위도, 경도 묶은거
+        GeoJsonPoint location, // 위도, 경도 묶은 거
         Double range // 반경
 ) {
 }

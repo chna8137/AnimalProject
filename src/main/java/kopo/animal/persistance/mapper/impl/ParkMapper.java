@@ -1,6 +1,5 @@
 package kopo.animal.persistance.mapper.impl;
 
-import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
@@ -12,13 +11,11 @@ import kopo.animal.persistance.mapper.IParkMapper;
 import kopo.animal.util.CmmUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.BsonNull;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +32,7 @@ public class ParkMapper extends AbstractMongoDBComon implements IParkMapper {
     @Override
     public List<ParkDTO> getParkInfo(String colNm, int page, int itemsPerPage, ParkDTO pDTO) throws Exception {
 
-        log.info(this.getClass().getName() + ".controller 공원정보 가져오기 시작!");
+        log.info(this.getClass().getName() + ".mapper 공원정보 가져오기 시작!");
 
         // 조회 결과를 전달하기 위한 객체 생성하기
         List<ParkDTO> rList = new LinkedList<>();
@@ -109,7 +106,7 @@ public class ParkMapper extends AbstractMongoDBComon implements IParkMapper {
         }
 
 
-        log.info(this.getClass().getName() + ".controller 공원 정보 가져오기 종료!");
+        log.info(this.getClass().getName() + ".mapper 공원 정보 가져오기 종료!");
 
         return rList;
     }
