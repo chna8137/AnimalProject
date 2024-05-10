@@ -9,8 +9,11 @@
     /*<![CDATA[*/
     let data = {};
     let ws;
-    const roomName = /*[[${roomName}]]*/ '';
-    const nickname = /*[[${nickname}]]*/ '';
+    var roomName = /*[[${roomName}]]*/ '';
+    var nickname = /*[[${nickname}]]*/ '';
+
+    console.log("roomName : " + roomName);
+    console.log("nickname : " + nickname);
 
     $(document).ready(function () {
       if (ws !== undefined && ws.readyState !== WebSocket.CLOSED) {
