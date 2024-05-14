@@ -3,6 +3,7 @@ package kopo.animal.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kopo.animal.dto.CalendarDTO;
 import kopo.animal.dto.NaverDTO;
 import kopo.animal.dto.TokenDTO;
 import kopo.animal.dto.UserInfoDTO;
@@ -21,6 +22,15 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.UUID;
+
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -34,6 +44,7 @@ public class NaverService implements INaverService {
     private String naverClientSecret;
     @Value("${naver.redirect_uri}")
     private String naverRedirectUri;
+
     @Override
     public TokenDTO getAccessToken(String code) throws Exception {
 
@@ -114,7 +125,7 @@ public class NaverService implements INaverService {
         log.info("headers : " + headers);
 
         // HttpHeader와 HttpBody를 하나의 오브젝트에 담기
-        HttpEntity<MultiValueMap<String, String>>naverProfileRequest = new HttpEntity<>(headers);
+        HttpEntity<MultiValueMap<String, String>> naverProfileRequest = new HttpEntity<>(headers);
 
         log.info("naverProfileRequest : " + naverProfileRequest);
 
@@ -161,5 +172,118 @@ public class NaverService implements INaverService {
         log.info(this.getClass().getName() + ".getUserInfoById 끝!");
 
         return rDTO;
+    }
+
+    @Override
+    public CalendarDTO getCalendarInfo(TokenDTO pDTO) throws Exception {
+
+        log.info(this.getClass().getName() + ".service 네이버 캘린더 조회하기 시작!");
+
+//        String token = "YOUR_ACCESS_TOKEN";
+//        String header = "Bearer " + token; // Bearer 다음에 공백 추가
+
+        // HttpHeader 오브젝트 생성
+        HttpHeaders header = new HttpHeaders();
+        header.add("Authorization", "Bearer " + pDTO.getAccess_token());
+
+        log.info("headers : " + header);
+
+        try {
+            String apiURL = "https://openapi.naver.com/calendar/createSchedule.json";
+            URL url = new URL(apiURL);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Authorization", header.getFirst("Authorization"));
+            String calSum = URLEncoder.encode("[제목] 캘린더API로 추가한 일정", "UTF-8");
+            String calDes = URLEncoder.encode("[상세] 회의 합니다", "UTF-8");
+            String calLoc = URLEncoder.encode("[장소] 그린팩토리", "UTF-8");
+            String uid = UUID.randomUUID().toString();
+            String scheduleIcalString = "BEGIN:VCALENDAR\n" +
+                    "VERSION:2.0\n" +
+                    "PRODID:Naver Calendar\n" +
+                    "CALSCALE:GREGORIAN\n" +
+                    "BEGIN:VTIMEZONE\n" +
+                    "TZID:Asia/Seoul\n" +
+                    "BEGIN:STANDARD\n" +
+                    "DTSTART:19700101T000000\n" +
+                    "TZNAME:GMT%2B09:00\n" +
+                    "TZOFFSETFROM:%2B0900\n" +
+                    "TZOFFSETTO:%2B0900\n" +
+                    "END:STANDARD\n" +
+                    "END:VTIMEZONE\n" +
+                    "BEGIN:VEVENT\n" +
+                    "SEQUENCE:0\n" +
+                    "CLASS:PUBLIC\n" +
+                    "TRANSP:OPAQUE\n" +
+                    "UID:" + uid + "\n" +                          // 일정 고유 아이디
+                    "DTSTART;TZID=Asia/Seoul:20161116T170000\n" +  // 시작 일시
+                    "DTEND;TZID=Asia/Seoul:20161116T173000\n" +    // 종료 일시
+                    "SUMMARY:" + calSum + " \n" +                    // 일정 제목
+                    "DESCRIPTION:" + calDes + " \n" +                // 일정 상세 내용
+                    "LOCATION:" + calLoc + " \n" +                   // 장소
+                    "RRULE:FREQ=YEARLY;BYDAY=FR;INTERVAL=1;UNTIL=20201231\n" +  // 일정 반복시 설정
+                    "ORGANIZER;CN=관리자:mailto:admin@sample.com\n" + // 일정 만든 사람
+                    "ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;CN=admin:mailto:user1@sample.com\n" + // 참석자
+                    "CREATED:20161116T160000Z\n" +         // 일정 생성시각
+                    "LAST-MODIFIED:20161116T160000Z\n" +   // 일정 수정시각
+                    "DTSTAMP:20161116T160000Z\n" +         // 일정 타임스탬프
+                    "END:VEVENT\n" +
+                    "END:VCALENDAR";
+            String postParams = "calendarId=defaultCalendarId&scheduleIcalString=" + scheduleIcalString;
+            System.out.println(postParams);
+            con.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            wr.writeBytes(postParams);
+            wr.flush();
+            wr.close();
+            int responseCode = con.getResponseCode();
+            BufferedReader br;
+            if (responseCode == 200) { // 정상 호출
+                br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            } else {  // 에러 발생
+                br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+            }
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = br.readLine()) != null) {
+                response.append(inputLine);
+            }
+            br.close();
+            System.out.println(response.toString());
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        log.info(this.getClass().getName() + ".service 네이버 캘린더 조회하기 종료!");
+
+        return null;
+    }
+
+    @Override
+    public void insertCalendar(CalendarDTO pDTO) throws Exception {
+
+        log.info(this.getClass().getName() + ".service 네이버 캘린더 일정 등록하기 시작!");
+
+
+        log.info(this.getClass().getName() + ".service 네이버 캘린더 일정 등록하기 종료!");
+
+    }
+
+    @Override
+    public void updateCalendar(CalendarDTO pDTO) throws Exception {
+
+        log.info(this.getClass().getName() + ".service 네이버 캘린더 일정 수정하기 시작!");
+
+        log.info(this.getClass().getName() + ".service 네이버 캘린더 일정 수정하기 종료!");
+
+    }
+
+    @Override
+    public void deleteCalendar(CalendarDTO pDTO) throws Exception {
+
+        log.info(this.getClass().getName() + ".service 네이버 캘린더 일정 삭제하기 시작!");
+
+        log.info(this.getClass().getName() + ".service 네이버 캘린더 일정 삭제하기 종료!");
+
     }
 }

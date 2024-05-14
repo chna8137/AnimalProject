@@ -31,7 +31,6 @@ public class NaverController {
     public String naverCallback(String code, HttpSession session, ModelMap modelMap) throws Exception {
 
         log.info(".controller 네이버 회원가입 및 로그인 실행");
-        // 이거 code 가 없어서 다 null 뜨는거라 이거부터 받아와야 되요
         log.info("콜백 컨트롤러 들어와서 매개변수로 받은 code 확인! : " + code);
 
         String msg = "";

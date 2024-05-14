@@ -1,5 +1,6 @@
 package kopo.animal.service;
 
+import kopo.animal.dto.CalendarDTO;
 import kopo.animal.dto.NaverDTO;
 import kopo.animal.dto.TokenDTO;
 import kopo.animal.dto.UserInfoDTO;
@@ -14,5 +15,21 @@ public interface INaverService {
 
     // DB에서 네이버로 가입한 회원의 정보를 가져오기
     UserInfoDTO getUserInfoById(UserInfoDTO pDTO) throws Exception;
+
+    // 캘린더 일정 상세보기
+    CalendarDTO getCalendarInfo(TokenDTO pDTO) throws Exception;
+
+    // 캘린더 일정등록
+    void insertCalendar(CalendarDTO pDTO) throws Exception;
+
+    // 캘린더 일정 수정
+    void updateCalendar(CalendarDTO pDTO) throws Exception;
+
+    // 캘린더 일정 삭제
+    void deleteCalendar(CalendarDTO pDTO) throws Exception;
+
+
+
+
 
 }
