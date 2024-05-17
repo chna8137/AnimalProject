@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Pet Sitting - Free Bootstrap 4 Template by Colorlib</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/css/animate.css">
+
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/css/magnific-popup.css">
+
+
+    <link rel="stylesheet" href="/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="/css/jquery.timepicker.css">
+
+    <link rel="stylesheet" href="/css/flaticon.css">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+        .botton {
+            height: 50px;
+            width: 50%;
+            border-radius: 5px;
+            background: black;
+            color: white;
+            margin-left: 25%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .botton:hover {
+            color: black;
+            background-color: transparent;
+            border-color: black;
+        }
+
+        @media (max-width: 780px) {
+            .botton {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin-top: 0px;
+                margin-left: 0px;
+            }
+        }
+    </style>
+
+    <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
+    <script th:inline="javascript">
+        function doDetail(seq) {
+            location.href = "/abnadoned/abandonedInfo?nSeq=" + seq;
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                url: "/abandoned/getAbandonedInfo",
+                type: "post",
+                dataType: "json",
+                success: function (response) {
+                    const result = response.data;
+                    const container = $("#animalData");
+
+                    result.forEach(function (data) {
+                        const animalHtml = `
+                            <div class="col-md-4 ftco-animate">
+                                <div class="blog-entry align-self-stretch">
+                                    <a href="#" class="block-20 rounded" style="background-image: url('${data.imageCours}');"></a>
+                                    <div class="text p-4">
+                                        <div class="meta mb-2">
+                                            <div><a>${data.receptDe}</a></div>
+                                            <div><a>${data.species}</a></div>
+                                            <div><a>${data.sex}</a></div>
+                                        </div>
+                                        <h3 class="heading"><a onclick="doDetail(${data.noticeSeq})">${data.pblancIdntfuNo}</a></h3>
+                                    </div>
+                                </div>
+                            </div>`;
+                        container.append(animalHtml);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching data:", error);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<!-- 헤더 메뉴 부분 -->
+<th:block th:replace="top"></th:block>
+
+<!-- END nav -->
+<section class="hero-wrap hero-wrap-2" style="background-image: url('/img/바나나개순.jpg');"
+         data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-end">
+            <div class="col-md-9 ftco-animate pb-5">
+                <p class="breadcrumbs mb-2"><span class="mr-2"><a href="index.html">Home <i
+                        class="ion-ios-arrow-forward"></i></a></span> <span>Blog <i
+                        class="ion-ios-arrow-forward"></i></span></p>
+                <h1 class="mb-0 bread">Blog</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ftco-section bg-light">
+    <div class="container">
+        <div class="row d-flex" id="animalData">
+            <!-- 유기동물 데이터가 여기에 추가됩니다 -->
+        </div>
+    </div>
+</section>
+
+<!-- footer 부분 -->
+<th:block th:replace="footer"></th:block>
+
+<!-- loader -->
+<div id="ftco-loader" class="show fullscreen">
+    <svg class="circular" width="48px" height="48px">
+        <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/>
+        <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10"
+                stroke="#F96D00"/>
+    </svg>
+</div>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/jquery-migrate-3.0.1.min.js"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.easing.1.3.js"></script>
+<script src="/js/jquery.waypoints.min.js"></script>
+<script src="/js/jquery.stellar.min.js"></script>
+<script src="/js/jquery.animateNumber.min.js"></script>
+<script src="/js/bootstrap-datepicker.js"></script>
+<script src="/js/jquery.timepicker.min.js"></script>
+<script src="/js/owl.carousel.min.js"></script>
+<script src="/js/jquery.magnific-popup.min.js"></script>
+<script src="/js/scrollax.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+<script src="/js/google-map.js"></script>
+<script src="/js/main.js"></script>
+</body>
+</html>
