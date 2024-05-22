@@ -1,6 +1,7 @@
 package kopo.animal.persistance.mapper;
 
 import kopo.animal.dto.AbandonedDTO;
+import kopo.animal.dto.NoticeDTO;
 
 import java.util.List;
 
@@ -23,4 +24,10 @@ public interface IAbandonedMapper {
      * @return 노래 리스트
      */
     List<AbandonedDTO> getAbandonedList(String colNm) throws Exception;
+
+
+    // 유기동물 상세정보
+    // 2024.05.21 ( 파라미터 값 변경 )
+    AbandonedDTO getAbandoned(String colNm, String idntfyNo) throws Exception;
+
 }

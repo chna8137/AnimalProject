@@ -16,6 +16,5 @@ public interface INaverService {
     // DB에서 네이버로 가입한 회원의 정보를 가져오기
     UserInfoDTO getUserInfoById(UserInfoDTO pDTO) throws Exception;
 
-    String createNaverCalendarEvent(TokenDTO pDTO, CalendarDTO cDTO) throws Exception;
 
 }
