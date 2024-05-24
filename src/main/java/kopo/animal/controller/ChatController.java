@@ -43,12 +43,12 @@ public class ChatController {
             model.addAttribute("msg", msg);
             model.addAttribute("url", url);
 
-            return "/redirect";
+            return "redirect";
         }
 
         log.info(this.getClass().getName() + "인트로 종료!");
 
-        return "/chat/intro";
+        return "chat/intro";
     }
 
     /**
@@ -79,7 +79,7 @@ public class ChatController {
 
         log.info(this.getClass().getName() + "채팅방 화면 종료!");
 
-        return "/chat/chatroom";
+        return "chat/chatroom";
     }
 
     /**

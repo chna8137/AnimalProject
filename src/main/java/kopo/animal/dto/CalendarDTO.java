@@ -1,34 +1,32 @@
 package kopo.animal.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
-@ToString
-@Data
-@JsonIgnoreProperties(ignoreUnknown = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class CalendarDTO {
 
-    private String uid; // 아이디값
 
-    private String dtStart; // 일정 시작 시간
+    private String userId; // 작성 아이디
 
-    private String dtEnd; // 일정 종료 시간
+    private String Start; // 시작일
 
-    private String summary; // 일정 제목
+    private String End; // 종료일
 
-    private String description; // 일정의 상세내용
+    private String startTime; // 시작 시간
 
-    private String location; // 장소 정보
+    private String endTime; // 종료 시간
 
-    private String organizer; // 약속일정인 경우 일정의 마스터 정보
+    //    private String regDt; // 등록일
 
-    private String attendee; // 약속 일정인 경우 참석자 정보
+    private String calendarSeq; // 순번
 
-    private String latModified; // 일정 최종 수정 시각
+    private String title; // 제목
+
+    private String contents; // 내용
 
 }
+
