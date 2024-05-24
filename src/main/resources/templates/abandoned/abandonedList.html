@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="/css/style.css">
 
     <style>
+
         .botton {
             height: 50px;
             width: 50%;
@@ -52,54 +53,27 @@
                 margin-left: 0px;
             }
         }
+
     </style>
 
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
     <script th:inline="javascript">
-        function doDetail(seq) {
-            location.href = "/abnadoned/abandonedInfo?nSeq=" + seq;
+
+        //상세보기 이동
+        function doDetail(idntfyNo) {
+            location.href = "/abandoned/abandonedInfo?idntfyNo=" + idntfyNo;
         }
 
-        $(document).ready(function () {
-            $.ajax({
-                url: "/abandoned/getAbandonedInfo",
-                type: "post",
-                dataType: "json",
-                success: function (response) {
-                    const result = response.data;
-                    const container = $("#animalData");
-
-                    result.forEach(function (data) {
-                        const animalHtml = `
-                            <div class="col-md-4 ftco-animate">
-                                <div class="blog-entry align-self-stretch">
-                                    <a href="#" class="block-20 rounded" style="background-image: url('${data.imageCours}');"></a>
-                                    <div class="text p-4">
-                                        <div class="meta mb-2">
-                                            <div><a>${data.receptDe}</a></div>
-                                            <div><a>${data.species}</a></div>
-                                            <div><a>${data.sex}</a></div>
-                                        </div>
-                                        <h3 class="heading"><a onclick="doDetail(${data.noticeSeq})">${data.pblancIdntfuNo}</a></h3>
-                                    </div>
-                                </div>
-                            </div>`;
-                        container.append(animalHtml);
-                    });
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error fetching data:", error);
-                }
-            });
-        });
     </script>
+
+
 </head>
 <body>
 <!-- 헤더 메뉴 부분 -->
 <th:block th:replace="top"></th:block>
 
 <!-- END nav -->
-<section class="hero-wrap hero-wrap-2" style="background-image: url('/img/바나나개순.jpg');"
+<section class="hero-wrap hero-wrap-2" style="background-image: url('/img/산책개순.jpg');"
          data-stellar-background-ratio="0.5">
     <div class="overlay"></div>
     <div class="container">
@@ -116,14 +90,62 @@
 
 <section class="ftco-section bg-light">
     <div class="container">
-        <div class="row d-flex" id="animalData">
-            <!-- 유기동물 데이터가 여기에 추가됩니다 -->
+        <div class="row d-flex">
+            <div class="col-md-4 ftco-animate" th:each="dto : ${rList}">
+                <div class="blog-entry align-self-stretch">
+                    <a th:href="@{/abandoned/abandonedInfo(idntfyNo=${dto.idntfyNo})}" class="block-20 rounded" th:style="'background-image: url(' + ${dto.thumbImageCours} + ');'">
+                    </a>
+                    <div class="text p-4">
+                        <div class="meta mb-2">
+                            <h3 class="heading">고유번호 : <span th:text="${dto.idntfyNo}"></span></h3>
+                        </div>
+                        <div th:text="'접수일시&nbsp&nbsp;:&nbsp&nbsp;' + ${dto.receptDe}"></div>
+                        <div th:text="'품종&nbsp&nbsp;:&nbsp&nbsp;' + ${dto.species}"></div>
+                        <div th:text="'성별&nbsp&nbsp;:&nbsp&nbsp;' + ${dto.sex}"></div>
+                        <div th:text="'발견장소&nbsp&nbsp;:&nbsp&nbsp;' + ${dto.plcInfo}"></div>
+                        <div th:text="'특징&nbsp&nbsp;:&nbsp&nbsp;' + ${dto.sfetrInfo}"></div>
+                        <div th:text="'상태&nbsp&nbsp;:&nbsp&nbsp;' + ${dto.state}"></div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
+    <!--    <a href="/notice/noticeReg">글쓰기</a>-->
+
+    <!-- 페이지 네이션 부분 -->
+    <div class="row mt-5">
+        <div class="col text-center">
+            <div class="block-27" th:href="@{/abandoned/abandonedList(page=1)}">
+                <ul>
+                    <li th:if="${currentPage > 1}">
+                        <a th:href="@{/abandoned/abandonedList(page=1)}">&laquo;</a>
+                        <a th:href="@{/abandoned/abandonedList(page=${currentPage - 1})}">&lt;</a>
+                    </li>
+
+                    <!-- 현재 그룹의 페이지 번호를 표시 -->
+                    <th:block th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}">
+                        <li th:classappend="${pageNumber == currentPage ? 'active' : ''}">
+                            <a th:href="@{/abandoned/abandonedList(page=${pageNumber})}"
+                               th:text="${pageNumber}"></a>
+                        </li>
+                    </th:block>
+
+                    <li th:if="${currentPage < totalPages}">
+                        <a th:href="@{/abandoned/abandonedList(page=${currentPage + 1})}">&gt;</a>
+                        <a th:href="@{/abandoned/abandonedList(page=${totalPages})}">&raquo;</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- 페이지 네이션 끝부분-->
+
 </section>
 
 <!-- footer 부분 -->
 <th:block th:replace="footer"></th:block>
+
 
 <!-- loader -->
 <div id="ftco-loader" class="show fullscreen">
@@ -133,6 +155,7 @@
                 stroke="#F96D00"/>
     </svg>
 </div>
+
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/jquery-migrate-3.0.1.min.js"></script>
@@ -150,5 +173,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
 <script src="/js/google-map.js"></script>
 <script src="/js/main.js"></script>
+
+
 </body>
 </html>
