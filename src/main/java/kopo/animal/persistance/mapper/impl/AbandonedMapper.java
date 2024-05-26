@@ -153,4 +153,89 @@ public class AbandonedMapper extends AbstractMongoDBComon implements IAbandonedM
 
         return rList;
     }
-}
+
+    // 2024.05.21 ( 파라미터 값 변경 및 로직 변경 )
+    @Override
+    public AbandonedDTO getAbandoned(String colNm, String idntfyNo) throws Exception {
+
+        log.info(this.getClass().getName() + ".mapper 유기동물 정보 가져오기 시작!");
+
+        // 조회 결과를 전달하기 위한 객체 생성하기
+        AbandonedDTO rDTO = null;
+
+        MongoCollection<Document> col = mongodb.getCollection(colNm);
+
+        // idntfyNo로 필터링 ( 추가 )
+        Document query = new Document("idntfyNo", idntfyNo);
+
+        Document projection = new Document();
+
+        projection.append("age", "$age");
+        projection.append("color", "$color");
+        projection.append("idntfyNo", "$idntfyNo");
+        projection.append("imageCours", "$imageCours");
+        projection.append("jurisdInstNm", "$jurisdInstNm");
+        projection.append("lat", "$lat");
+        projection.append("lon", "$lon");
+        projection.append("neut", "$neut");
+        projection.append("pblancBeginDe", "$pblancBeginDe");
+        projection.append("pblancEndDe", "$pblancEndDe");
+        projection.append("pblancIdntfuNo", "$pblancIdntfuNo");
+        projection.append("plcInfo", "$plcInfo");
+        projection.append("protectPlc", "$protectPlc");
+        projection.append("receptDe", "$receptDe");
+        projection.append("refineLotnoAddr", "$refineLotnoAddr");
+        projection.append("refineRoadnmAddr", "$refineRoadnmAddr");
+        projection.append("refineZipCd", "$refineZipCd");
+        projection.append("sex", "$sex");
+        projection.append("sfetrInfo", "$sfetrInfo");
+        projection.append("shterNm", "$shterNm");
+        projection.append("shterTelno", "$shterTelno");
+        projection.append("species", "$species");
+        projection.append("state", "$state");
+        projection.append("thumbImageCours", "$thumbImageCours");
+        projection.append("weight", "$weight");
+        projection.append("_id", 0);
+
+        // find 고유번호로 필터링
+        FindIterable<Document> rs = col.find(query).projection(projection);
+
+        Document doc = rs.first();
+        if (doc != null) {
+            rDTO = AbandonedDTO.builder()
+                    .age(CmmUtil.nvl(doc.getString("age")))
+                    .color(CmmUtil.nvl(doc.getString("color")))
+                    .idntfyNo(CmmUtil.nvl(doc.getString("idntfyNo")))
+                    .imageCours(CmmUtil.nvl(doc.getString("imageCours")))
+                    .jurisdInstNm(CmmUtil.nvl(doc.getString("jurisdInstNm")))
+                    .lat(CmmUtil.nvl(doc.getString("lat")))
+                    .lon(CmmUtil.nvl(doc.getString("lon")))
+                    .neut(CmmUtil.nvl(doc.getString("neut")))
+                    .pblancBeginDe(CmmUtil.nvl(doc.getString("pblancBeginDe")))
+                    .pblancEndDe(CmmUtil.nvl(doc.getString("pblancEndDe")))
+                    .pblancIdntfuNo(CmmUtil.nvl(doc.getString("pblancIdntfuNo")))
+                    .plcInfo(CmmUtil.nvl(doc.getString("plcInfo")))
+                    .protectPlc(CmmUtil.nvl(doc.getString("protectPlc")))
+                    .receptDe(CmmUtil.nvl(doc.getString("receptDe")))
+                    .refineLotnoAddr(CmmUtil.nvl(doc.getString("refineLotnoAddr")))
+                    .refineRoadnmAddr(CmmUtil.nvl(doc.getString("refineRoadnmAddr")))
+                    .refineZipCd(CmmUtil.nvl(doc.getString("refineZipCd")))
+                    .sex(CmmUtil.nvl(doc.getString("sex")))
+                    .sfetrInfo(CmmUtil.nvl(doc.getString("sfetrInfo")))
+                    .shterNm(CmmUtil.nvl(doc.getString("shterNm")))
+                    .shterTelno(CmmUtil.nvl(doc.getString("shterTelno")))
+                    .species(CmmUtil.nvl(doc.getString("species")))
+                    .state(CmmUtil.nvl(doc.getString("state")))
+                    .thumbImageCours(CmmUtil.nvl(doc.getString("thumbImageCours")))
+                    .weight(CmmUtil.nvl(doc.getString("weight")))
+                    .build();
+        }
+
+        log.info("rDTO : " + rDTO);
+
+        log.info(this.getClass().getName() + ".mapper 유기동물 정보 가져오기 종료!");
+
+        return rDTO;
+    }
+
+    }

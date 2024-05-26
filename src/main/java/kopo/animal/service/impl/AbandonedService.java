@@ -164,4 +164,17 @@ public class AbandonedService implements IAbandonedService {
 
         return rList;
     }
+
+    // 2024.05.21 ( 파라미터 값 변경 밑 로직 변경 )
+    @Override
+    public AbandonedDTO getAbandoned(String colName, String idntfyNo) throws Exception {
+        log.info(this.getClass().getName() + ".service 유기동물 상세보기 시작!");
+
+        AbandonedDTO rDTO = abandonedMapper.getAbandoned(colName, idntfyNo);
+
+        log.info(this.getClass().getName() + ".service 유기동물 상세보기 종료!");
+
+        return rDTO;
+    }
+
 }
