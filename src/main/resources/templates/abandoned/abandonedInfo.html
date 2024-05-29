@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap"
+          rel="stylesheet">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/animate.css">
@@ -19,15 +20,32 @@
 
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
 
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f41cde658d6d919beb4c82dadb4ffa0a"></script>
+    <script type="text/javascript"
+            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f41cde658d6d919beb4c82dadb4ffa0a"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var lat = [[${rDTO.lat}]]
+            var lon = [[${rDTO.lon}]]
+
             var container = document.getElementById('map');
             var options = {
-                center: new kakao.maps.LatLng(33.450701, 126.570667),
+                center: new kakao.maps.LatLng(lat, lon),
                 level: 3
             };
             var map = new kakao.maps.Map(container, options);
+
+            // 마커가 표시될 위치입니다
+            var markerPosition = new kakao.maps.LatLng(lat, lon);
+
+            // 마커를 생성합니다
+            var marker = new kakao.maps.Marker({
+                position: markerPosition
+            });
+
+            // 마커가 지도 위에 표시되도록 설정합니다
+            marker.setMap(map);
         });
     </script>
 </head>
@@ -37,12 +55,16 @@
 <th:block th:replace="top"></th:block>
 
 <!-- END nav -->
-<section class="hero-wrap hero-wrap-2" style="background-image: url('/img/산책개순.jpg');" data-stellar-background-ratio="0.5">
+<section class="hero-wrap hero-wrap-2" style="background-image: url('/img/산책개순.jpg');"
+         data-stellar-background-ratio="0.5">
     <div class="overlay"></div>
     <div class="container">
         <div class="row no-gutters slider-text align-items-end">
             <div class="col-md-9 ftco-animate pb-5">
-                <p class="breadcrumbs mb-2"><span class="mr-2"><a href="index.html">Home <i class="ion-ios-arrow-forward"></i></a></span> <span class="mr-2"><a href="blog.html">Blog <i class="ion-ios-arrow-forward"></i></a></span> <span>Blog Single <i class="ion-ios-arrow-forward"></i></span></p>
+                <p class="breadcrumbs mb-2"><span class="mr-2"><a href="index.html">Home <i
+                        class="ion-ios-arrow-forward"></i></a></span> <span class="mr-2"><a href="blog.html">Blog <i
+                        class="ion-ios-arrow-forward"></i></a></span> <span>Blog Single <i
+                        class="ion-ios-arrow-forward"></i></span></p>
                 <h1 class="mb-0 bread">Blog</h1>
             </div>
         </div>
@@ -57,20 +79,20 @@
                     <img th:src="${rDTO.imageCours}" alt="" class="img-fluid">
                 </p>
                 <h2 class="mb-3" th:text="${rDTO.idntfyNo}"></h2>
-                <p th:text="${rDTO.species}"></p>
-                <p th:text="${rDTO.sex}"></p>
-                <p th:text="${rDTO.neut}"></p>
-                <p th:text="${rDTO.age}"></p>
-                <p th:text="${rDTO.weight}"></p>
-                <p th:text="${rDTO.receptDe}"></p>
-                <p th:text="${rDTO.plcInfo}"></p>
-                <p th:text="${rDTO.sfetrInfo}"></p>
-                <p th:text="${rDTO.pblancBeginDe}"></p>
-                <p th:text="${rDTO.pblancEndDe}"></p>
-                <p th:text="${rDTO.shterNm}"></p>
-                <p th:text="${rDTO.refineRoadnmAddr}"></p>
-                <p th:text="${rDTO.shterTelno}"></p>
-                <p th:text="${rDTO.protectPlc}"></p>
+                <p><strong>품종 : </strong> <span th:text="${rDTO.species}"></span></p>
+                <p><strong>성별 : </strong> <span th:text="${rDTO.sex}"></span></p>
+                <p><strong>중성화여부 : </strong> <span th:text="${rDTO.neut}"></span></p>
+                <p><strong>나이 : </strong> <span th:text="${rDTO.age}"></span></p>
+                <p><strong>체중 : </strong> <span th:text="${rDTO.weight}"></span></p>
+                <p><strong>접수일자 : </strong> <span th:text="${rDTO.receptDe}"></span></p>
+                <p><strong>발견장소 : </strong> <span th:text="${rDTO.plcInfo}"></span></p>
+                <p><strong>특징 : </strong> <span th:text="${rDTO.sfetrInfo}"></span></p>
+                <p><strong>공고시작일자 : </strong> <span th:text="${rDTO.pblancBeginDe}"></span></p>
+                <p><strong>공고종료일자 : </strong> <span th:text="${rDTO.pblancEndDe}"></span></p>
+                <p><strong>보호소명 : </strong> <span th:text="${rDTO.shterNm}"></span></p>
+                <p><strong>보호소 도로명 주소 : </strong> <span th:text="${rDTO.refineRoadnmAddr}"></span></p>
+                <p><strong>보호소 전화번호 : </strong> <span th:text="${rDTO.shterTelno}"></span></p>
+                <p><strong>보호장소 : </strong> <span th:text="${rDTO.protectPlc}"></span></p>
             </div> <!-- .col-md-8 -->
 
             <!-- 지도를 표시할 div 입니다 -->
@@ -86,7 +108,8 @@
 <div id="ftco-loader" class="show fullscreen">
     <svg class="circular" width="48px" height="48px">
         <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/>
-        <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/>
+        <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10"
+                stroke="#F96D00"/>
     </svg>
 </div>
 
