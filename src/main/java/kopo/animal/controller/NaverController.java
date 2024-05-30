@@ -116,7 +116,7 @@ public class NaverController {
 
         log.info(".controller 네이버 회원가입 및 로그인 종료");
 
-        return "/redirect";
+        return "redirect";
     }
 
 }

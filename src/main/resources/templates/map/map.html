@@ -3,42 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <title>공원 정보</title>
-    <link rel="stylesheet" href="/css/table.css"/>
+    <link rel="stylesheet" href="/css/list.css"/>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/css/animate.css">
+
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/css/magnific-popup.css">
+
+
+    <link rel="stylesheet" href="/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="/css/jquery.timepicker.css">
+
+    <link rel="stylesheet" href="/css/flaticon.css">
+    <link rel="stylesheet" href="/css/style.css">
+
     <script type="text/javascript" src="/js/jquery-3.6.0.min.js"></script>
-    <div id="map" style="width:40%;height:300px;position:relative;overflow:hidden; margin-left: 20%"></div>
     <script type="text/javascript"
             src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f41cde658d6d919beb4c82dadb4ffa0a&libraries=services"></script>
-    <script th:inline="javascript">
+    <script type="text/javascript">
+        var map;
 
-        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-            mapOption = {
+        function initializeMap() {
+            var mapContainer = document.getElementById('map'); // 지도를 표시할 div
+            var mapOption = {
                 center: new kakao.maps.LatLng(37.54982267371823, 126.84233877714716), // 지도의 중심좌표
                 level: 8 // 지도의 확대 레벨
             };
+            map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+        }
 
-        var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+        $(document).ready(function () {
+            initializeMap();
+        });
     </script>
-    <script type="text/javascript" src="/js/park.js"></script>
-    <script type="text/javascript" src="/js/culture.js"></script>
-    <script type="text/javascript" src="/js/hospital.js"></script>
-
 </head>
 <body>
-<h2>안녕하세요?</h2>
-<button id="btnPark" type="button">공원</button>
-<button id="btnCulture" type="button">문화시설</button>
-<button id="btnHospital" type="button">동물병원</button>
-<div class="divTable minimalistBlack">
-    <div class="divTableHeading">
-        <div class="divTableCell">산책경로구분명</div>
-        <div class="divTableCell">시군구명</div>
-        <div class="divTableCell">지번 주소</div>
+
+<!-- 헤더 메뉴 부분 -->
+<th:block th:replace="~{top}"></th:block>
+
+    <div id="sidebar">
+        <button id="btnPark" class="sidebar-btn" type="button">공원</button>
+        <button id="btnCulture" class="sidebar-btn" type="button">문화시설</button>
+        <button id="btnHospital" class="sidebar-btn" type="button">의료</button>
     </div>
-    <div class="divTableBody" id="parkData"></div>
-    <div class="divTableBody" id="cultureData"></div>
-    <div class="divTableBody" id="hospitalData"></div>
-</div>
-<form id="f">
-</form>
+    <div id="sidebarContent" class="hidden">
+        <div class="sidebar-content">
+            <div id="hospitalData" class="divTableBody"></div>
+            <div id="cultureData" class="divTableBody"></div>
+            <div id="parkData" class="divTableBody"></div>
+        </div>
+    </div>
+    <div id="map" style="height: 100%"></div>
+    <form id="f"></form>
+
+<script type="text/javascript" src="/js/hospital.js"></script>
+<script type="text/javascript" src="/js/culture.js"></script>
+<script type="text/javascript" src="/js/park.js"></script>
 </body>
 </html>

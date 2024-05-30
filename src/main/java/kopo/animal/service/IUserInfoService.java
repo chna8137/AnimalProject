@@ -29,6 +29,6 @@ public interface IUserInfoService {
     // 비밀번호 재설정
     int newPasswordProc(UserInfoDTO pDTO) throws Exception;
 
-    /* 이름 가져오기 */
+    /* 닉네임 가져오기 */
     UserInfoDTO getNickname(UserInfoDTO pDTO) throws Exception;
 }

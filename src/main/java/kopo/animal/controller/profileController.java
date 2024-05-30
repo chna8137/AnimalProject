@@ -81,7 +81,7 @@ public class profileController {
 
         log.info(this.getClass().getName() + "마이페이지 조회 컨트롤러 종료!");
 
-        return "/user/profile";
+        return "user/profile";
 
     }
 
@@ -125,7 +125,7 @@ public class profileController {
 
         log.info(this.getClass().getName() + "마이페이지 수정페이지 보여주기 종료!");
 
-        return "/user/profileModify";
+        return "user/profileModify";
     }
 
     @ResponseBody

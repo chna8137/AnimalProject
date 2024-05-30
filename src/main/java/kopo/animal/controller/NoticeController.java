@@ -74,6 +74,7 @@ public class NoticeController {
         model.addAttribute("totalPages", totalPages);
 
         log.info(this.getClass().getName() + ".페이지 번호 : " + page);
+        log.info("총 페이지 수 : " + totalPages);
 
         /**페이징 끝부분*/
 
