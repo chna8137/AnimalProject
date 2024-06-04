@@ -5,8 +5,17 @@
 
     <!-- 마이페이지 정보 조회-->
     <select id="getProfile" parameterType="UserInfoDTO" resultType="UserInfoDTO">
-        SELECT USER_ID, USER_NAME, NICKNAME, EMAIL, ADDR1, ADDR2
-        FROM USER_INFO
+        SELECT
+            U.USER_ID,
+            U.USER_NAME,
+            U.NICKNAME,
+            U.EMAIL,
+            U.ADDR1,
+            U.ADDR2,
+            COALESCE((SELECT F.FILE_URL
+                      FROM FILE F
+                      WHERE U.USER_ID = F.USER_ID), '/img/profile.png') AS FILE_URL
+        FROM USER_INFO U
         WHERE USER_ID = #{userId}
     </select>
 

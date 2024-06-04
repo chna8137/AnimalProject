@@ -58,14 +58,14 @@ public class profileController {
         log.info("pDTO : " + pDTO);
 
         // 이미지 가져오기
-        List<FileDTO> rList = Optional.ofNullable(fileService.getFile(pDTO)).orElseGet(ArrayList::new);
+//        List<FileDTO> rList = Optional.ofNullable(fileService.getFile(pDTO)).orElseGet(ArrayList::new);
+//
+//        log.info("rList : " + rList);
+//
+////        rList.add(rDTO.getImage(fDTO.getFileUrl()));
+//        model.addAttribute("rList", rList);
 
-        log.info("rList : " + rList);
-
-//        rList.add(rDTO.getImage(fDTO.getFileUrl()));
-        model.addAttribute("rList", rList);
-
-        log.info("rList : " + rList);
+//        log.info("rList : " + rList);
 
         // 이미지 가져오기 종료
 
@@ -102,14 +102,14 @@ public class profileController {
         UserInfoDTO rDTO = Optional.ofNullable(profileService.getProfile(pDTO)).orElseGet(UserInfoDTO::new);
 
         // 이미지 가져오기
-        List<FileDTO> rList = Optional.ofNullable(fileService.getFile(pDTO)).orElseGet(ArrayList::new);
-
-        log.info("rList : " + rList);
-
-//        rList.add(rDTO.getImage(fDTO.getFileUrl()));
-        model.addAttribute("rList", rList);
-
-        log.info("rList : " + rList);
+//        List<FileDTO> rList = Optional.ofNullable(fileService.getFile(pDTO)).orElseGet(ArrayList::new);
+//
+//        log.info("rList : " + rList);
+//
+////        rList.add(rDTO.getImage(fDTO.getFileUrl()));
+//        model.addAttribute("rList", rList);
+//
+//        log.info("rList : " + rList);
 
         // 이미지 가져오기 종료
 
