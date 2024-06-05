@@ -66,44 +66,52 @@ public class ParkMapper extends AbstractMongoDBComon implements IParkMapper {
                 .map(Double::parseDouble)
                 .orElse(null);
 
+        // pDTO.range() 값이 null일 경우 기본 값 설정
+        Double range = Optional.ofNullable(pDTO.range()).orElse(500.0); // 기본 값을 500 미터로 설정
+
         log.info("spotLa : " + spotLa);
         log.info("spotLo : " + spotLo);
+        log.info("range : " + range);
 
-        Point refPoint = new Point(new Position(spotLa, spotLo));
-        Bson geoFilter = Filters.near("location", refPoint, pDTO.range(), 0.0);
+        if (spotLa != null && spotLo != null) {
+            Point refPoint = new Point(new Position(spotLa, spotLo));
+            Bson geoFilter = Filters.near("location", refPoint, pDTO.range(), 0.0);
 
-        FindIterable<Document> rs = col.find(geoFilter).projection(projection);
 
-        for (Document doc : rs) {
-            String wlkCoursFlagNm = CmmUtil.nvl(doc.getString("wlkCoursFlagNm"));
-            String coursDc = CmmUtil.nvl(doc.getString("coursDc"));
-            String signguNm = CmmUtil.nvl(doc.getString("signguNm"));
-            String coursLtCn = CmmUtil.nvl(doc.getString("coursLtCn"));
-            String lnmAddr = CmmUtil.nvl(doc.getString("lnmAddr"));
-            String coursSpotLa = CmmUtil.nvl(doc.getString("coursSpotLa"));
-            String coursSpotLo = CmmUtil.nvl(doc.getString("coursSpotLo"));
+            FindIterable<Document> rs = col.find(geoFilter).projection(projection).skip(skip).limit(limit);
 
-            log.info("wlkCoursFlagNm : " + wlkCoursFlagNm);
-            log.info("coursDc : " + coursDc);
-            log.info("signguNm : " + signguNm);
-            log.info("coursLtCn : " + coursLtCn);
-            log.info("lnmAddr : " + lnmAddr);
-            log.info("coursSpotLa : " + coursSpotLa);
-            log.info("coursSpotLo : " + coursSpotLo);
+            for (Document doc : rs) {
+                String wlkCoursFlagNm = CmmUtil.nvl(doc.getString("wlkCoursFlagNm"));
+                String coursDc = CmmUtil.nvl(doc.getString("coursDc"));
+                String signguNm = CmmUtil.nvl(doc.getString("signguNm"));
+                String coursLtCn = CmmUtil.nvl(doc.getString("coursLtCn"));
+                String lnmAddr = CmmUtil.nvl(doc.getString("lnmAddr"));
+                String coursSpotLa = CmmUtil.nvl(doc.getString("coursSpotLa"));
+                String coursSpotLo = CmmUtil.nvl(doc.getString("coursSpotLo"));
 
-            ParkDTO rDTO = ParkDTO.builder()
-                    .wlkCoursFlagNm(wlkCoursFlagNm)
-                    .coursDc(coursDc)
-                    .signguNm(signguNm)
-                    .coursLtCn(coursLtCn)
-                    .lnmAddr(lnmAddr)
-                    .coursSpotLa(coursSpotLa)
-                    .coursSpotLo(coursSpotLo).build();
+                log.info("wlkCoursFlagNm : " + wlkCoursFlagNm);
+                log.info("coursDc : " + coursDc);
+                log.info("signguNm : " + signguNm);
+                log.info("coursLtCn : " + coursLtCn);
+                log.info("lnmAddr : " + lnmAddr);
+                log.info("coursSpotLa : " + coursSpotLa);
+                log.info("coursSpotLo : " + coursSpotLo);
 
-            // 레코드 결과를 List에 저장하기
-            rList.add(rDTO);
+                ParkDTO rDTO = ParkDTO.builder()
+                        .wlkCoursFlagNm(wlkCoursFlagNm)
+                        .coursDc(coursDc)
+                        .signguNm(signguNm)
+                        .coursLtCn(coursLtCn)
+                        .lnmAddr(lnmAddr)
+                        .coursSpotLa(coursSpotLa)
+                        .coursSpotLo(coursSpotLo).build();
 
+                // 레코드 결과를 List에 저장하기
+                rList.add(rDTO);
+
+            }
         }
+
 
 
         log.info(this.getClass().getName() + ".mapper 공원 정보 가져오기 종료!");

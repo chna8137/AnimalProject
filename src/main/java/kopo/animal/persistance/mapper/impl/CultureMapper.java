@@ -62,45 +62,53 @@ public class CultureMapper extends AbstractMongoDBComon implements ICultureMappe
                 .map(Double::parseDouble)
                 .orElse(null);
 
+        // pDTO.range() 값이 null일 경우 기본 값 설정
+        Double range = Optional.ofNullable(pDTO.range()).orElse(500.0); // 기본 값을 500 미터로 설정
+
         log.info("la : " + la);
         log.info("lo : " + lo);
+        log.info("range : " + range);
 
-        Point refPoint = new Point(new Position(la, lo));
-        Bson geoFilter = Filters.near("location", refPoint, pDTO.range(), 0.0);
+        if (la != null && lo != null) {
+            Point refPoint = new Point(new Position(la, lo)); // Note the order: (longitude, latitude)
+            Bson geoFilter = Filters.near("location", refPoint, range, 0.0);
 
-        FindIterable<Document> rs = col.find(geoFilter).projection(projection);
+            // 페이징을 적용하여 쿼리 실행
+            FindIterable<Document> rs = col.find(geoFilter)
+                    .projection(projection)
+                    .skip(skip)
+                    .limit(limit);
 
-        for (Document doc : rs) {
-            String fcltyNm = CmmUtil.nvl(doc.getString("fcltyNm"));
-            String ctgryThreeNm = CmmUtil.nvl(doc.getString("ctgryThreeNm"));
-            String lcLa = CmmUtil.nvl(doc.getString("lcLa"));
-            String lcLo = CmmUtil.nvl(doc.getString("lcLo"));
-            String zipNo = CmmUtil.nvl(doc.getString("zipNo"));
-            String rdnmadrNm = CmmUtil.nvl(doc.getString("rdnmadrNm"));
+            for (Document doc : rs) {
+                String fcltyNm = CmmUtil.nvl(doc.getString("fcltyNm"));
+                String ctgryThreeNm = CmmUtil.nvl(doc.getString("ctgryThreeNm"));
+                String lcLa = CmmUtil.nvl(doc.getString("lcLa"));
+                String lcLo = CmmUtil.nvl(doc.getString("lcLo"));
+                String zipNo = CmmUtil.nvl(doc.getString("zipNo"));
+                String rdnmadrNm = CmmUtil.nvl(doc.getString("rdnmadrNm"));
 
-            log.info("fcltyNm : " + fcltyNm);
-            log.info("ctgryThreeNm : " + ctgryThreeNm);
-            log.info("lcLa : " + lcLa);
-            log.info("lcLo : " + lcLo);
-            log.info("zipNo : " + zipNo);
-            log.info("rdnmadrNm : " + rdnmadrNm);
+                log.info("fcltyNm : " + fcltyNm);
+                log.info("ctgryThreeNm : " + ctgryThreeNm);
+                log.info("lcLa : " + lcLa);
+                log.info("lcLo : " + lcLo);
+                log.info("zipNo : " + zipNo);
+                log.info("rdnmadrNm : " + rdnmadrNm);
 
-            CultureDTO rDTO = CultureDTO.builder()
-                    .fcltyNm(fcltyNm)
-                    .ctgryThreeNm(ctgryThreeNm)
-                    .lcLa(lcLa)
-                    .lcLo(lcLo)
-                    .zipNo(zipNo)
-                    .rdnmadrNm(rdnmadrNm).build();
+                CultureDTO rDTO = CultureDTO.builder()
+                        .fcltyNm(fcltyNm)
+                        .ctgryThreeNm(ctgryThreeNm)
+                        .lcLa(lcLa)
+                        .lcLo(lcLo)
+                        .zipNo(zipNo)
+                        .rdnmadrNm(rdnmadrNm).build();
 
-            // 레코드 결과를 List에 저장하기
-            rList.add(rDTO);
-
+                // 레코드 결과를 List에 저장하기
+                rList.add(rDTO);
+            }
         }
 
         log.info(this.getClass().getName() + ".mapper 문화시설 정보 가져오기 종료!");
 
         return rList;
-
     }
 }

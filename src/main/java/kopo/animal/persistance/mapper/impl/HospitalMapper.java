@@ -60,35 +60,41 @@ public class HospitalMapper extends AbstractMongoDBComon implements IHospitalMap
                 .map(Double::parseDouble)
                 .orElse(null);
 
+        // pDTO.range() 값이 null일 경우 기본 값 설정
+        Double range = Optional.ofNullable(pDTO.range()).orElse(500.0); // 기본 값을 500 미터로 설정
+
         log.info("fLa : " + fLa);
         log.info("fLo : " + fLo);
+        log.info("range : " + range);
 
-        Point refPoint = new Point(new Position(fLa, fLo));
-        Bson geoFilter = Filters.near("location", refPoint, pDTO.range(), 0.0);
+        if (fLa != null && fLo != null) {
+            Point refPoint = new Point(new Position(fLa, fLo));
+            Bson geoFilter = Filters.near("location", refPoint, pDTO.range(), 0.0);
 
-        FindIterable<Document> rs = col.find(geoFilter).projection(projection);
+            FindIterable<Document> rs = col.find(geoFilter).projection(projection).skip(skip).limit(limit);
 
-        for (Document doc : rs) {
-            String fcltyNm = CmmUtil.nvl(doc.getString("fcltyNm"));
-            String rdnmadrNm = CmmUtil.nvl(doc.getString("rdnmadrNm"));
-            String fcltyLa = CmmUtil.nvl(doc.getString("fcltyLa"));
-            String fcltyLo = CmmUtil.nvl(doc.getString("fcltyLo"));
+            for (Document doc : rs) {
+                String fcltyNm = CmmUtil.nvl(doc.getString("fcltyNm"));
+                String rdnmadrNm = CmmUtil.nvl(doc.getString("rdnmadrNm"));
+                String fcltyLa = CmmUtil.nvl(doc.getString("fcltyLa"));
+                String fcltyLo = CmmUtil.nvl(doc.getString("fcltyLo"));
 
-            log.info("fcltyNm : " + fcltyNm);
-            log.info("rdnmadrNm : " + rdnmadrNm);
-            log.info("fcltyLa : " + fcltyLa);
-            log.info("fcltyLo : " + fcltyLo);
+                log.info("fcltyNm : " + fcltyNm);
+                log.info("rdnmadrNm : " + rdnmadrNm);
+                log.info("fcltyLa : " + fcltyLa);
+                log.info("fcltyLo : " + fcltyLo);
 
-           HospitalDTO rDTO = HospitalDTO.builder()
-                   .fcltyNm(fcltyNm)
-                   .rdnmadrNm(rdnmadrNm)
-                   .fcltyLa(fcltyLa)
-                   .fcltyLo(fcltyLo)
-                   .build();
+                HospitalDTO rDTO = HospitalDTO.builder()
+                        .fcltyNm(fcltyNm)
+                        .rdnmadrNm(rdnmadrNm)
+                        .fcltyLa(fcltyLa)
+                        .fcltyLo(fcltyLo)
+                        .build();
 
-           // 레코드 결과를 List에 저장하기
-            rList.add(rDTO);
+                // 레코드 결과를 List에 저장하기
+                rList.add(rDTO);
 
+            }
         }
 
         log.info(this.getClass().getName() + "..mapper 동물병원 정보 가져오기 종료!");
