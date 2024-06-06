@@ -134,11 +134,13 @@
                 doFile()
             })
 
-            $("input[type='file']").change(function (e) {
-                preview(e.target.files);
-            });
 
-            $("#file-input").change(function (e) {
+            $("input[type='file']").change(function (e) {
+                if (!validateFiles(e.target.files)) {
+                    alert('이미지 파일만 업로드 가능합니다.');
+                    $(this).val('');
+                    return;
+                }
                 removePreviousImage();
                 preview(e.target.files);
             });
@@ -150,7 +152,7 @@
 
                 // 업로드 가능 파일인지 체크
                 for (var i = 0; i < files.length; i++) {
-                    if (!!checkExtension(files[i].name, files[i].size)) {
+                    if (checkExtension(files[i].name, files[i].size)) {
                         return false;
                     }
                 }
@@ -189,8 +191,23 @@
             )
         }
 
+        function validateFiles(files) {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var imageType = /^image\/(jpeg|png|gif)$/;
+
+                if (!imageType.test(file.type)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         // 파일 확인
         function checkExtension(fileName, fileSize) {
+
+            console.log(fileSize)
+
             var regex = new RegExp("(.*?)\.(exe|sh|zip|alz)$");
             var maxSize = 20971520; // 20MB
 
@@ -204,6 +221,19 @@
                 alert('업로드 불가능한 파일이 있습니다.');
                 $("input[type='file']").val("");
                 return false;
+            }
+            return true;
+        }
+
+        // 파일 유형 확인
+        function validateFiles(files) {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var imageType = /^image\/(jpeg|png|gif)$/;
+
+                if (!imageType.test(file.type)) {
+                    return false;
+                }
             }
             return true;
         }
