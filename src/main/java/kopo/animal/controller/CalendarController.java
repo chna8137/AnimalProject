@@ -25,18 +25,28 @@ public class CalendarController {
     private final ICalendarService calendarService;
 
     @GetMapping(value = "calendar")
-    public String calendar(ModelMap modelMap, HttpSession session) throws Exception {
+    public String calendar(ModelMap model, HttpSession session) throws Exception {
 
         log.info(this.getClass().getName() + ".calendar Start!!");
 
         String userId = CmmUtil.nvl((String) session.getAttribute("SS_USER_ID")); // 아이디
+
+        if (userId.length() < 1) {
+            String msg = "로그인 정보가 없습니다. \n 로그인 후 이용해 주세요.";
+            String url = "/user/login";
+
+            model.addAttribute("msg", msg);
+            model.addAttribute("url", url);
+
+            return "redirect";
+        }
 
         // 오늘 일정 가져오기
         CalendarDTO pDTO = new CalendarDTO();
         pDTO.setUserId(userId);
         List<CalendarDTO> rList = Optional.ofNullable(calendarService.getTodayCalendarList(pDTO)).orElseGet(ArrayList::new);
 
-        modelMap.addAttribute(rList);
+        model.addAttribute(rList);
 
         log.info(this.getClass().getName() + ".calendar End!!");
 

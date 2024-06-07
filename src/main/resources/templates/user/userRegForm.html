@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org"
           xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-    <title>아이디찾기</title>
+    <title>회원가입</title>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap"
           rel="stylesheet">
 
@@ -23,7 +23,6 @@
     <link rel="stylesheet" href="/css/style.css">
 
     <style>
-
         .botton {
             height: 50px;
             width: 100px;
@@ -38,6 +37,7 @@
             background-color: transparent;
             border-color: black;
         }
+
         @media (max-width: 780px) {
             .botton {
                 display: flex;
@@ -47,7 +47,6 @@
                 margin-top: 0px;
             }
         }
-
     </style>
 
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -56,6 +55,7 @@
 
         // 아이디 중복체크여부 (중복 Y / 중복아님 : N)
         let userIdCheck = "Y";
+        let nicknameCheck = "Y";
         // 이메일 중복체크 인증번호 발송 값
         let emailAuthNumber = "";
         // HTML로딩이 완료되고, 실행됨
@@ -108,15 +108,14 @@
                 }
             )
         }
+
         // 닉네임 중복 체크
         function nicknameExists(f) {
-
             if (f.nickname.value === "") {
                 alert("닉네임를 입력하세요.");
                 f.nickname.focus();
                 return;
             }
-
             // Ajax 호출해서 회원가입하기
             $.ajax({
                     url: "/user/getNicknameExists",
@@ -124,16 +123,13 @@
                     dataType: "JSON", // 전송 결과는 JSON으로 받기
                     data: $("#f").serialize(), // form 태그 내 input 등 객체를 자동으로 전송할 형태로 변경하기
                     success: function (json) { // 호출이 성공했다면..
-
                         if (json.existsYn === "Y") {
                             alert("이미 가입된 닉네임이 존재합니다.");
                             f.userId.focus();
-
                         } else {
                             alert("사용 가능한 닉네임입니다.");
-                            userIdCheck = "N";
+                            nicknameCheck = "N";
                         }
-
                     }
                 }
             )
@@ -143,6 +139,11 @@
         function emailExists(f) {
             if (f.email.value === "") {
                 alert("이메일을 입력하세요.");
+                f.email.focus();
+                return;
+            }
+            if (!isEmailValid(f.email.value)) {
+                alert("올바른 이메일 형식으로 작성해주세요.");
                 f.email.focus();
                 return;
             }
@@ -165,6 +166,18 @@
             )
         }
 
+        // 이메일 형식 체크
+        function isEmailValid(email) {
+            const emailRegex = /^[a-zA-Z]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/;
+            return emailRegex.test(email);
+        }
+
+        // 이름 형식 체크 (숫자 및 특수문자 불가)
+        function isNameValid(name) {
+            const nameRegex = /^[가-힣a-zA-Z]+$/;
+            return nameRegex.test(name);
+        }
+
         // 카카오 우편번호 조회 API 호출
         function kakaoPost(f) {
             new daum.Postcode({
@@ -182,6 +195,8 @@
 
         //회원가입 정보의 유효성 체크하기
         function doSubmit(f) {
+            const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+
             if (f.userId.value === "") {
                 alert("아이디를 입력하세요.");
                 f.userId.focus();
@@ -197,8 +212,18 @@
                 f.userName.focus();
                 return;
             }
+            if (!isNameValid(f.userName.value)) {
+                alert("이름을 다시 입력해주세요");
+                f.userName.focus();
+                return;
+            }
             if (f.nickname.value === "") {
                 alert("닉네임을 입력하세요.");
+                f.nickname.focus();
+                return;
+            }
+            if (nicknameCheck !== "N") {
+                alert("닉네임 중복 체크 및 중복되지 않은 닉네임으로 가입 바랍니다.");
                 f.nickname.focus();
                 return;
             }
@@ -207,18 +232,28 @@
                 f.password.focus();
                 return;
             }
+            if (!passwordRegex.test(f.password.value)) {
+                alert("비밀번호는 영문, 숫자, 특수문자 포함 6자리 이상이어야 합니다.");
+                f.password.focus();
+                return;
+            }
             if (f.password2.value === "") {
-                alert("비밀번호확인을 입력하세요.");
+                alert("비밀번호 확인란을 입력하세요.");
                 f.password2.focus();
                 return;
             }
             if (f.password.value !== f.password2.value) {
-                alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
-                f.password.focus();
+                alert("비밀번호가 일치하지 않습니다.");
+                f.password2.focus();
                 return;
             }
             if (f.email.value === "") {
                 alert("이메일을 입력하세요.");
+                f.email.focus();
+                return;
+            }
+            if (!isEmailValid(f.email.value)) {
+                alert("올바른 이메일 형식으로 작성해주세요.");
                 f.email.focus();
                 return;
             }
@@ -244,20 +279,19 @@
             }
             // Ajax 호출해서 회원가입하기
             $.ajax({
-                    url: "/user/insertUserInfo",
-                    type: "post", // 전송방식은 Post
-                    dataType: "JSON", // 전송 결과는 JSON으로 받기
-                    data: $("#f").serialize(), // form 태그 내 input 등 객체를 자동으로 전송할 형태로 변경하기
-                    success: function (json) { // /notice/noticeUpdate 호출이 성공했다면..
-                        if (json.result === 1) { // 회원가입 성공
-                            alert(json.msg); // 메시지 띄우기
-                            location.href = "/user/login"; // 로그인 페이지 이동
-                        } else { // 회원가입 실패
-                            alert(json.msg); // 메시지 띄우기
-                        }
+                url: "/user/insertUserInfo",
+                type: "post", // 전송방식은 Post
+                dataType: "JSON", // 전송 결과는 JSON으로 받기
+                data: $("#f").serialize(), // form 태그 내 input 등 객체를 자동으로 전송할 형태로 변경하기
+                success: function (json) { // /notice/noticeUpdate 호출이 성공했다면..
+                    if (json.result === 1) { // 회원가입 성공
+                        alert(json.msg); // 메시지 띄우기
+                        location.href = "/user/login"; // 로그인 페이지 이동
+                    } else { // 회원가입 실패
+                        alert(json.msg); // 메시지 띄우기
                     }
                 }
-            )
+            });
         }
     </script>
 </head>
@@ -310,9 +344,9 @@
 
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label class="label" for="name"
+                                                    <label class="label" for="userName"
                                                            style="color: #AB4501 !important; text-transform: uppercase; font-size: 12px; font-weight: 600">이름</label>
-                                                    <input type="text" class="form-control" name="userName" id="name"
+                                                    <input type="text" class="form-control" name="userName" id="userName"
                                                            placeholder="이름"
                                                            style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
                                                 </div>
@@ -335,11 +369,12 @@
                                                            id="password"
                                                            placeholder="비밀번호"
                                                            style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
+                                                    <p style="font-size: 12px; color: darkgrey">영어/숫자/특수문자 조합으로 최소 6자 이상</p>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label class="label" for="password"
+                                                    <label class="label" for="password2"
                                                            style="color: #AB4501 !important; text-transform: uppercase; font-size: 12px; font-weight: 600">비밀번호 확인</label>
                                                     <input type="password" class="form-control" name="password2"
                                                            id="password2"
@@ -352,7 +387,7 @@
                                                     <label class="label" for="email"
                                                            style="color: #AB4501 !important; text-transform: uppercase; font-size: 12px; font-weight: 600">이메일</label>
                                                     <input type="email" class="form-control" name="email" id="email"
-                                                           placeholder="이메일"
+                                                           placeholder="이메일" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" required
                                                            style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
                                                 </div>
                                             </div>
