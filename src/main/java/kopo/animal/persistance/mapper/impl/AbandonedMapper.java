@@ -231,11 +231,27 @@ public class AbandonedMapper extends AbstractMongoDBComon implements IAbandonedM
                     .build();
         }
 
-        log.info("rDTO : " + rDTO);
+//        log.info("rDTO : " + rDTO);
 
         log.info(this.getClass().getName() + ".mapper 유기동물 정보 가져오기 종료!");
 
         return rDTO;
     }
 
+    @Override
+    public int deleteAbandoned(String colNm) throws Exception {
+        log.info(this.getClass().getName() + ".deleteAbandoned Start!");
+
+        int res = 0;
+
+        // MongoDB 컬렉션에서 모든 데이터 삭제
+        super.dropCollection(mongodb, colNm);
+
+        res = 1;
+
+        log.info(this.getClass().getName() + ".deleteAbandoned End!");
+
+        return res;
     }
+
+}
