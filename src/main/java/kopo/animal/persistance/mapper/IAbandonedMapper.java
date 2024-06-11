@@ -30,4 +30,7 @@ public interface IAbandonedMapper {
     // 2024.05.21 ( 파라미터 값 변경 )
     AbandonedDTO getAbandoned(String colNm, String idntfyNo) throws Exception;
 
+    /* 스케쥴링에 따라 값 삭제*/
+    int deleteAbandoned(String colNm) throws Exception;
+
 }

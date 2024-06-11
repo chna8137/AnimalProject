@@ -20,5 +20,8 @@ public interface IAbandonedService {
     // 2024.05.21 ( 파라미터 값 변경 )
     AbandonedDTO getAbandoned(String colNm, String idntfyNo) throws Exception;
 
+    List<AbandonedDTO> getUrgentAbandonedList(String colNm) throws Exception;
 
+    // 유기동물 삭제
+    int dropAbandoned() throws Exception;
 }

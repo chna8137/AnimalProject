@@ -10,15 +10,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="stylesheet" href="/css/animate.css">
-
     <link rel="stylesheet" href="/css/owl.carousel.min.css">
     <link rel="stylesheet" href="/css/owl.theme.default.min.css">
     <link rel="stylesheet" href="/css/magnific-popup.css">
-
-
     <link rel="stylesheet" href="/css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="/css/jquery.timepicker.css">
-
     <link rel="stylesheet" href="/css/flaticon.css">
     <link rel="stylesheet" href="/css/style.css">
 
@@ -38,6 +34,52 @@
         .ml-2 {
             margin-left: 0.5rem;
         }
+
+        .section-title {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .section-description {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .feature-box {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .feature-box img {
+            max-width: 100%;
+            height: 50%;
+        }
+
+        .feature-box h3 {
+            font-size: 1.5em;
+            margin-top: 20px;
+            color: #AB4501;
+        }
+
+        .feature-box p {
+            font-size: 1em;
+            color: #666;
+        }
+
+        .btn-primary {
+            background-color: #AB4501;
+            border-color: #AB4501;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #D28A4E;
+            border-color: #D28A4E;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -45,19 +87,50 @@
 <!-- 헤더 메뉴 부분 -->
 <th:block th:replace="~{top}"></th:block>
 
-<!-- END nav -->
+<!-- 메인 배너 -->
 <div class="hero-wrap js-fullheight" style="background-image: url('/img/알파카개순.jpg');" data-stellar-background-ratio="0.5">
     <div class="overlay"></div>
     <div class="container">
         <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-center" data-scrollax-parent="true">
             <div class="col-md-11 ftco-animate text-center">
-                <h1 class="mb-4">이 개는 저희 집 개 입니다.</h1>
+                <h1 class="mb-4">반려동물과의 추억을 공유하고,<br/>유기동물에게 사랑을 나누세요.</h1>
                 <p><a href="/user/login" class="btn btn-primary mr-md-4 py-3 px-4">Learn more <span class="ion-ios-arrow-forward"></span></a></p>
             </div>
         </div>
     </div>
 </div>
 
+<!-- 동물병원, 문화시설, 산책로 섹션 -->
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center pb-5 mb-3">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <h2 class="section-title">반려동물과 함께하는 즐거운 생활</h2>
+                <p class="section-description">가까운 동물병원, 동물 동반 문화시설, 산책로 정보를 제공합니다.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 ftco-animate feature-box">
+                <img src="/img/동물병원.png" alt="동물병원">
+                <h3>동물병원</h3>
+                <p>가까운 동물병원을 찾아보세요. 신속하고 정확한 치료를 받을 수 있습니다.</p>
+            </div>
+            <div class="col-md-4 ftco-animate feature-box">
+                <img src="/img/문화시설.png" alt="동물 동반 문화시설">
+                <h3>동물 동반 문화시설</h3>
+                <p>반려동물과 함께 즐길 수 있는 다양한 문화시설을 소개합니다.</p>
+                <a href="map/map" class="btn btn-primary mt-3">바로가기</a>
+            </div>
+            <div class="col-md-4 ftco-animate feature-box">
+                <img src="/img/산책.png" alt="산책로">
+                <h3>산책로</h3>
+                <p>반려동물과 함께 산책하기 좋은 산책로를 찾아보세요. 즐거운 산책 시간을 보내세요.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 마감기한 유기동물 섹션 -->
 <section class="ftco-section bg-light">
     <div class="container">
         <div class="row justify-content-center pb-5 mb-3">
@@ -72,241 +145,70 @@
                     <div class="img" th:style="'background-image: url(' + ${abandoned.thumbImageCours} + ');'" style="height: 200px; background-size: cover; background-position: center;"></div>
                     <div class="text-center p-4">
                         <span class="excerpt d-block" th:text="${abandoned.species} + ' (' + ${abandoned.age} + ')'"></span>
-
-
                         <ul class="pricing-text mb-5">
                             <li><span class="fa fa-map-marker mr-2"></span><span th:text="'보호소명: ' + ${abandoned.shterNm}"></span></li>
                             <li><span class="fa fa-map-marker mr-2"></span><span th:text="'발견 장소: ' + ${abandoned.plcInfo}"></span></li>
                             <li><span class="fa fa-calendar mr-2"></span><span th:text="'마감일: ' + ${abandoned.pblancEndDe}"></span></li>
                         </ul>
-
                         <a th:href="@{'abandoned/abandonedInfo?idntfyNo=' + ${abandoned.idntfyNo}}" class="btn btn-primary d-block px-2 py-3">Read more</a>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
 
-<!--<section class="ftco-section">-->
-<!--    <div class="container">-->
-<!--        <div class="row justify-content-center pb-5 mb-3">-->
-<!--            <div class="col-md-7 heading-section text-center ftco-animate">-->
-<!--                <h2>Pets Gallery</h2>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="row">-->
-<!--            <div class="col-md-4 ftco-animate">-->
-<!--                <div class="work mb-4 img d-flex align-items-end" style="background-image: url(/img/gallery-1.jpg);">-->
-<!--                    <a href="images/gallery-1.jpg" class="icon image-popup d-flex justify-content-center align-items-center">-->
-<!--                        <span class="fa fa-expand"></span>-->
-<!--                    </a>-->
-<!--                    <div class="desc w-100 px-4">-->
-<!--                        <div class="text w-100 mb-3">-->
-<!--                            <span>Cat</span>-->
-<!--                            <h2><a href="work-single.html">Persian Cat</a></h2>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-4 ftco-animate">-->
-<!--                <div class="work mb-4 img d-flex align-items-end" style="background-image: url(/img/gallery-2.jpg);">-->
-<!--                    <a href="images/gallery-2.jpg" class="icon image-popup d-flex justify-content-center align-items-center">-->
-<!--                        <span class="fa fa-expand"></span>-->
-<!--                    </a>-->
-<!--                    <div class="desc w-100 px-4">-->
-<!--                        <div class="text w-100 mb-3">-->
-<!--                            <span>Dog</span>-->
-<!--                            <h2><a href="work-single.html">Pomeranian</a></h2>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-4 ftco-animate">-->
-<!--                <div class="work mb-4 img d-flex align-items-end" style="background-image: url(/img/gallery-3.jpg);">-->
-<!--                    <a href="images/gallery-3.jpg" class="icon image-popup d-flex justify-content-center align-items-center">-->
-<!--                        <span class="fa fa-expand"></span>-->
-<!--                    </a>-->
-<!--                    <div class="desc w-100 px-4">-->
-<!--                        <div class="text w-100 mb-3">-->
-<!--                            <span>Cat</span>-->
-<!--                            <h2><a href="work-single.html">Sphynx Cat</a></h2>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+<!-- 커뮤니티 및 채팅 기능 섹션 -->
+<section class="ftco-section bg-light">
+    <div class="container">
+        <div class="row justify-content-center pb-5 mb-3">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <h2 class="section-title">커뮤니티 및 채팅</h2>
+                <p class="section-description">다양한 반려동물 소유자들과 소통하고 정보를 공유하세요.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 ftco-animate feature-box">
+                <img src="/img/커뮤.png" alt="커뮤니티">
+                <h3>커뮤니티</h3>
+                <p>반려동물에 대한 다양한 정보를 나누고, 경험을 공유할 수 있는 커뮤니티입니다.</p>
+                <a href="notice/noticeList" class="btn btn-primary mt-3">바로가기</a>
+            </div>
+            <div class="col-md-6 ftco-animate feature-box">
+                <img src="/img/채팅.png" alt="채팅">
+                <h3>채팅</h3>
+                <p>실시간 채팅을 통해 반려동물 소유자들과 소통하고, 궁금한 점을 물어보세요.</p>
+                <a href="chat/intro" class="btn btn-primary mt-3">바로가기</a>
+            </div>
+        </div>
+    </div>
+</section>
 
-<!--            <div class="col-md-4 ftco-animate">-->
-<!--                <div class="work mb-4 img d-flex align-items-end" style="background-image: url(/img/gallery-4.jpg);">-->
-<!--                    <a href="images/gallery-4.jpg" class="icon image-popup d-flex justify-content-center align-items-center">-->
-<!--                        <span class="fa fa-expand"></span>-->
-<!--                    </a>-->
-<!--                    <div class="desc w-100 px-4">-->
-<!--                        <div class="text w-100 mb-3">-->
-<!--                            <span>Cat</span>-->
-<!--                            <h2><a href="work-single.html">British Shorthair</a></h2>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-4 ftco-animate">-->
-<!--                <div class="work mb-4 img d-flex align-items-end" style="background-image: url(/img/gallery-5.jpg);">-->
-<!--                    <a href="images/gallery-5.jpg" class="icon image-popup d-flex justify-content-center align-items-center">-->
-<!--                        <span class="fa fa-expand"></span>-->
-<!--                    </a>-->
-<!--                    <div class="desc w-100 px-4">-->
-<!--                        <div class="text w-100 mb-3">-->
-<!--                            <span>Dog</span>-->
-<!--                            <h2><a href="work-single.html">Beagle</a></h2>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-4 ftco-animate">-->
-<!--                <div class="work mb-4 img d-flex align-items-end" style="background-image: url(/img/gallery-6.jpg);">-->
-<!--                    <a href="images/gallery-6.jpg" class="icon image-popup d-flex justify-content-center align-items-center">-->
-<!--                        <span class="fa fa-expand"></span>-->
-<!--                    </a>-->
-<!--                    <div class="desc w-100 px-4">-->
-<!--                        <div class="text w-100 mb-3">-->
-<!--                            <span>Dog</span>-->
-<!--                            <h2><a href="work-single.html">Pug</a></h2>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</section>-->
-
-<!--<section class="ftco-section bg-light">-->
-<!--    <div class="container">-->
-<!--        <div class="row justify-content-center pb-5 mb-3">-->
-<!--            <div class="col-md-7 heading-section text-center ftco-animate">-->
-<!--                <h2>Latest news from our blog</h2>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <div class="row d-flex">-->
-<!--            <div class="col-md-4 d-flex ftco-animate">-->
-<!--                <div class="blog-entry align-self-stretch">-->
-<!--                    <a href="blog-single.html" class="block-20 rounded" style="background-image: url('/img/image_1.jpg');">-->
-<!--                    </a>-->
-<!--                    <div class="text p-4">-->
-<!--                        <div class="meta mb-2">-->
-<!--                            <div><a href="#">April 07, 2020</a></div>-->
-<!--                            <div><a href="#">Admin</a></div>-->
-<!--                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>-->
-<!--                        </div>-->
-<!--                        <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-4 d-flex ftco-animate">-->
-<!--                <div class="blog-entry align-self-stretch">-->
-<!--                    <a href="blog-single.html" class="block-20 rounded" style="background-image: url('/img/image_2.jpg');">-->
-<!--                    </a>-->
-<!--                    <div class="text p-4">-->
-<!--                        <div class="meta mb-2">-->
-<!--                            <div><a href="#">April 07, 2020</a></div>-->
-<!--                            <div><a href="#">Admin</a></div>-->
-<!--                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>-->
-<!--                        </div>-->
-<!--                        <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="col-md-4 d-flex ftco-animate">-->
-<!--                <div class="blog-entry align-self-stretch">-->
-<!--                    <a href="blog-single.html" class="block-20 rounded" style="background-image: url('/img/image_3.jpg');">-->
-<!--                    </a>-->
-<!--                    <div class="text p-4">-->
-<!--                        <div class="meta mb-2">-->
-<!--                            <div><a href="#">April 07, 2020</a></div>-->
-<!--                            <div><a href="#">Admin</a></div>-->
-<!--                            <div><a href="#" class="meta-chat"><span class="fa fa-comment"></span> 3</a></div>-->
-<!--                        </div>-->
-<!--                        <h3 class="heading"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a></h3>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</section>-->
-
-<!--<section class="ftco-appointment ftco-section ftco-no-pt ftco-no-pb img" style="background-image: url(/img/bg_3.jpg);">-->
-<!--    <div class="overlay"></div>-->
-<!--    <div class="container">-->
-<!--        <div class="row d-md-flex justify-content-end">-->
-<!--            <div class="col-md-12 col-lg-6 half p-3 py-5 pl-lg-5 ftco-animate">-->
-<!--                <h2 class="mb-4">Free Consultation</h2>-->
-<!--                <form action="#" class="appointment">-->
-<!--                    <div class="row">-->
-<!--                        <div class="col-md-12">-->
-<!--                            <div class="form-group">-->
-<!--                                <div class="form-field">-->
-<!--                                    <div class="select-wrap">-->
-<!--                                        <div class="icon"><span class="fa fa-chevron-down"></span></div>-->
-<!--                                            <option value="">Select services</option>-->
-<!--                                            <option value="">Cat Sitting</option>-->
-<!--                                            <option value="">Dog Walk</option>-->
-<!--                                            <option value="">Pet Spa</option>-->
-<!--                                            <option value="">Pet Grooming</option>-->
-<!--                                            <option value="">Pet Daycare</option>-->
-<!--                                        </select>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-6">-->
-<!--                            <div class="form-group">-->
-<!--                                <input type="text" class="form-control" placeholder="Your Name">-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-6">-->
-<!--                            <div class="form-group">-->
-<!--                                <input type="text" class="form-control" placeholder="Vehicle number">-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-6">-->
-<!--                            <div class="form-group">-->
-<!--                                <div class="input-wrap">-->
-<!--                                    <div class="icon"><span class="fa fa-calendar"></span></div>-->
-<!--                                    <input type="text" class="form-control appointment_date" placeholder="Date">-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-6">-->
-<!--                            <div class="form-group">-->
-<!--                                <div class="input-wrap">-->
-<!--                                    <div class="icon"><span class="fa fa-clock-o"></span></div>-->
-<!--                                    <input type="text" class="form-control appointment_time" placeholder="Time">-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-12">-->
-<!--                            <div class="form-group">-->
-<!--                                <textarea name="" id="" cols="30" rows="7" class="form-control" placeholder="Message"></textarea>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-12">-->
-<!--                            <div class="form-group">-->
-<!--                                <input type="submit" value="Send message" class="btn btn-primary py-3 px-4">-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </form>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</section>-->
+<!-- 일정 등록 기능 섹션 -->
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center pb-5 mb-3">
+            <div class="col-md-7 heading-section text-center ftco-animate">
+                <h2 class="section-title">반려동물 일정 등록</h2>
+                <p class="section-description">반려동물과의 중요한 일정을 캘린더에 등록하고 관리하세요.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 ftco-animate feature-box">
+                <img src="/img/캘린더.png" alt="캘린더">
+                <h3>캘린더 기능</h3>
+                <p>반려동물과의 일정을 캘린더에 등록하여, 중요한 약속을 놓치지 마세요.</p>
+                <a href="calendar/calendar" class="btn btn-primary mt-3">바로가기</a>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- footer 부분 -->
 <th:block th:replace="~{footer}"></th:block>
 
 <!-- loader -->
 <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee"/><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00"/></svg></div>
-
 
 <script src="/js/jquery.min.js"></script>
 <script src="/js/jquery-migrate-3.0.1.min.js"></script>
@@ -324,8 +226,6 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
 <script src="/js/google-map.js"></script>
 <script src="/js/main.js"></script>
-
-
 
 </body>
 </html>
