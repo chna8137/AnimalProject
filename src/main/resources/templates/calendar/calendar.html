@@ -25,7 +25,6 @@
     <link rel="stylesheet" href="/css/owl.theme.default.min.css">
     <link rel="stylesheet" href="/css/magnific-popup.css">
 
-
     <link rel="stylesheet" href="/css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="/css/jquery.timepicker.css">
 
@@ -41,6 +40,10 @@
         #calendar {
             max-width: 1100px;
             margin: 0 auto;
+        }
+        textarea {
+            resize: none;
+            height: 150px;
         }
     </style>
 </head>
@@ -69,25 +72,29 @@
                         <label for="eventTitle">제목</label>
                         <input type="text" class="form-control" id="eventTitle" placeholder="제목을 입력해주세요">
                     </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="eventStartDate">시작일</label>
+                            <input type="date" class="form-control" id="eventStartDate">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="eventStartTime">시작시간</label>
+                            <input type="time" class="form-control" id="eventStartTime">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="eventEndDate">종료일</label>
+                            <input type="date" class="form-control" id="eventEndDate">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="eventEndTime">종료시간</label>
+                            <input type="time" class="form-control" id="eventEndTime">
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="eventContents">내용</label>
                         <textarea class="form-control" id="eventContents" rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="eventStartDate">시작일</label>
-                        <input type="date" class="form-control" id="eventStartDate">
-                    </div>
-                    <div class="form-group">
-                        <label for="eventEndDate">종료일</label>
-                        <input type="date" class="form-control" id="eventEndDate">
-                    </div>
-                    <div class="form-group">
-                        <label for="eventStartTime">시작시간</label>
-                        <input type="time" class="form-control" id="eventStartTime">
-                    </div>
-                    <div class="form-group">
-                        <label for="eventEndTime">종료시간</label>
-                        <input type="time" class="form-control" id="eventEndTime">
                     </div>
                 </form>
             </div>
@@ -102,5 +109,79 @@
 
 <!-- Call calendar.js -->
 <script src="/js/calendar.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // 오늘 날짜를 가져와서 date input의 min 속성에 설정
+        var today = moment().format('YYYY-MM-DD');
+        $('#eventStartDate').attr('min', today);
+        $('#eventEndDate').attr('min', today);
 
+        // 날짜가 변경될 때 유효성 검사
+        function validateDates() {
+            var startDate = $('#eventStartDate').val();
+            var endDate = $('#eventEndDate').val();
 
+            if (moment(endDate).isBefore(moment(startDate))) {
+                alert('종료 날짜가 시작 날짜보다 빠를 수 없습니다.');
+                $('#eventEndDate').val('');
+            }
+        }
+
+        // 시간 유효성 검사
+        function validateTimes() {
+            var startDate = $('#eventStartDate').val();
+            var startTime = $('#eventStartTime').val();
+            var endDate = $('#eventEndDate').val();
+            var endTime = $('#eventEndTime').val();
+
+            if (startDate && startTime && endDate && endTime) {
+                var startDateTime = moment(startDate + ' ' + startTime);
+                var endDateTime = moment(endDate + ' ' + endTime);
+
+                if (endDateTime.isBefore(startDateTime)) {
+                    alert('종료 시간이 시작 시간보다 빠를 수 없습니다.');
+                    $('#eventEndTime').val('');
+                }
+            }
+        }
+
+        $('#eventStartDate, #eventEndDate').on('blur change', validateDates);
+        $('#eventStartTime, #eventEndTime').on('blur change', validateTimes);
+
+        $('#saveEvent').on('click', function() {
+            var title = $('#eventTitle').val();
+            var contents = $('#eventContents').val();
+            var startDate = $('#eventStartDate').val();
+            var endDate = $('#eventEndDate').val();
+            var startTime = $('#eventStartTime').val();
+            var endTime = $('#eventEndTime').val();
+
+            var startDateTime = moment(startDate + ' ' + startTime);
+            var endDateTime = moment(endDate + ' ' + endTime);
+            var now = moment();
+
+            // 현재 시간보다 이전인지 확인
+            if (!startDateTime.isValid() || !endDateTime.isValid()) {
+                alert('날짜와 시간이 올바르지 않습니다.');
+                return;
+            }
+
+            if (startDateTime.isBefore(now)) {
+                alert('이전 날짜 및 시간으로는 이벤트를 등록할 수 없습니다.');
+                return;
+            }
+
+            if (endDateTime.isBefore(startDateTime)) {
+                alert('종료 시간이 시작 시간보다 빠를 수 없습니다.');
+                return;
+            }
+
+            // 입력 데이터 유효성 검사 통과 시, 저장 작업 진행
+            alert('이벤트가 저장되었습니다.');
+            // 여기서 이벤트 저장 로직을 추가합니다.
+        });
+    });
+</script>
+
+</body>
+</html>
