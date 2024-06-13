@@ -28,9 +28,11 @@ public class NoticeController {
      * 게시판 리스트 보여주기
      */
     @GetMapping(value = "noticeList")
-    public String noticeList(HttpSession session, ModelMap model, HttpServletRequest request, @RequestParam(defaultValue = "1") int page) throws Exception {
+    public String noticeList(HttpSession session, ModelMap model, HttpServletRequest request,
+                             @RequestParam(defaultValue = "1") int page,
+                             @RequestParam(defaultValue = "9") int pageSize) throws Exception {
 
-        log.info(this.getClass().getName() + ".noticeList 컨트롤러 시작!");
+        log.info(this.getClass().getName() + " 공지사항 리스트 컨트롤러 시작!");
 
         String nSeq = CmmUtil.nvl(request.getParameter("nSeq"));
         String userId = CmmUtil.nvl((String) session.getAttribute("SS_USER_ID"));
@@ -38,61 +40,68 @@ public class NoticeController {
         log.info("nSeq : " + nSeq);
         log.info("userId : " + userId);
 
-        // 값 전달은 반드시 DTO 객체를 이용해서 처리할 전달받은 값을 DTO 객체에 넣는다.
         NoticeDTO pDTO = new NoticeDTO();
         pDTO.setNoticeSeq(nSeq);
         pDTO.setUserId(userId);
+        pDTO.setPage(page);
+        pDTO.setPageSize(pageSize);
 
-        // 공지사항 상세정보 가져오기
         NoticeDTO rDTO = Optional.ofNullable(noticeService.getNoticeInfo(pDTO, true)).orElseGet(NoticeDTO::new);
-
-        // 조회된 리스트 결과값 넣어주기
         model.addAttribute("rDTO", rDTO);
 
-        // 공지사항 리스트 조회하기
-        List<NoticeDTO> rList = Optional.ofNullable(noticeService.getNoticeList()).orElseGet(ArrayList::new);
+        int totalCount = noticeService.getTotalCount();
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
 
-        /**페이징 시작 부분*/
+        log.info("totalCount : " + totalCount);
+        log.info("totalPages : " + totalPages);
 
-        // 페이지당 보여줄 아이템 개수 정의
-        int itemsPerPage = 9;
+        int startRow = (page - 1) * pageSize + 1;
+        int endRow = Math.min(page * pageSize, totalCount);
+        List<NoticeDTO> pagedNoticeList = noticeService.getPagedNoticeList(startRow, endRow);
 
-        // 페이지네이션을 위해 전체 아이템 개수 구하기
-        int totalItems = rList.size();
+        log.info("startRow : " + startRow);
+        log.info("endRow : " + endRow);
 
-        // 전체 페이지 개수 계산
-        int totalPages = (int) Math.ceil((double) totalItems / itemsPerPage);
-
-        // 현재 페이지에 해당하는 아이템들만 선택하여 rList에 할당
-        int fromIndex = (page - 1) * itemsPerPage;
-        int toIndex = Math.min(fromIndex + itemsPerPage, totalItems);
-        rList = rList.subList(fromIndex, toIndex);
-
-
-        model.addAttribute("rList", rList);
-        model.addAttribute("currentPage", page);
+        model.addAttribute("rList", pagedNoticeList);
+        model.addAttribute("page", page);
+        model.addAttribute("pageSize", pageSize);
         model.addAttribute("totalPages", totalPages);
 
-        log.info(this.getClass().getName() + ".페이지 번호 : " + page);
-        log.info("총 페이지 수 : " + totalPages);
+        // 페이지 네이션을 10개씩 보여주기 위한 계산
+        int pageGroupSize = 10;
+        int currentPageGroup = (int) Math.ceil((double) page / pageGroupSize);
+        int startPage = (currentPageGroup - 1) * pageGroupSize + 1;
+        int endPage = Math.min(startPage + pageGroupSize - 1, totalPages);
 
-        /**페이징 끝부분*/
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
 
-        // 조회된 리스트 결과값 넣어주기
-        model.addAttribute("rList", rList);
-
-        // 들어온 값 확인
-        log.info("rList : " + rList);
+        log.info("startPage : " + startPage);
+        log.info("endPage : " + endPage);
+        log.info("pagedNoticeList : " + pagedNoticeList);
 
         log.info(this.getClass().getName() + ".noticeList 컨트롤러 끝!");
 
         return "notice/noticeList";
     }
 
+
     @GetMapping(value = "noticeReg")
-    public String noticeReg() {
+    public String noticeReg(HttpSession session, ModelMap model) {
 
         log.info(this.getClass().getName() + ".noticeReg 컨트롤러 시작!");
+
+        String userId = CmmUtil.nvl((String) session.getAttribute("SS_USER_ID"));
+
+        if (userId.length() < 1) {
+            String msg = "로그인 정보가 없습니다. \n 로그인 후 이용해 주세요.";
+            String url = "/user/login";
+
+            model.addAttribute("msg", msg);
+            model.addAttribute("url", url);
+
+            return "redirect";
+        }
 
         log.info(this.getClass().getName() + ".noticeReg 컨트롤러 끝!");
 
@@ -198,6 +207,16 @@ public class NoticeController {
 
         String nSeq = CmmUtil.nvl(request.getParameter("nSeq"));
         String userId = CmmUtil.nvl((String) session.getAttribute("SS_USER_ID"));
+
+        if (userId.length() < 1) {
+            String msg = "로그인 정보가 없습니다. \n 로그인 후 이용해 주세요.";
+            String url = "/user/login";
+
+            model.addAttribute("msg", msg);
+            model.addAttribute("url", url);
+
+            return "redirect";
+        }
 
         log.info("nSeq : " + nSeq);
         log.info("userId : " + userId);
