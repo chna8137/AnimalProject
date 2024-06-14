@@ -1,6 +1,7 @@
 package kopo.animal.service;
 
 import kopo.animal.dto.NoticeDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -13,6 +14,12 @@ public interface INoticeService {
      * @return 조회 결과
      */
     List<NoticeDTO> getNoticeList() throws Exception;
+
+
+    List<NoticeDTO> getPagedNoticeList(int startRow, int endRow) throws Exception;
+
+    int getTotalCount() throws Exception;
+
 
     /**
      * 공지사항 상세보기

@@ -31,4 +31,8 @@ public class NoticeDTO {
 
     private String nickname; // 닉네임
 
+    private int page;
+
+    private int pageSize;
+
 }

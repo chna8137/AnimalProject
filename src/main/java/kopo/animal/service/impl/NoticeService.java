@@ -8,7 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,6 +25,19 @@ public class NoticeService implements INoticeService {
         log.info(this.getClass().getName() + ".getNoticeList 서비스 시작!");
 
         return noticeMapper.getNoticeList();
+    }
+
+    @Override
+    public List<NoticeDTO> getPagedNoticeList(int startRow, int endRow) throws Exception {
+        return noticeMapper.getPagedNoticeList(startRow, endRow);
+    }
+
+    @Override
+    public int getTotalCount() throws Exception {
+
+        log.info("전체 페이지 수 시작");
+
+        return noticeMapper.getTotalCount();
     }
 
     @Transactional

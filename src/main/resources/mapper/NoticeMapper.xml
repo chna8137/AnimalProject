@@ -20,6 +20,34 @@
         ORDER BY N.NOTICE_YN, N.REG_DT DESC
     </select>
 
+    <!-- 전체 레코드 수를 가져오는 쿼리 -->
+    <select id="getTotalCount" resultType="int">
+        SELECT COUNT(*)
+        FROM NOTICE N
+                 JOIN USER_INFO U ON N.USER_ID = U.USER_ID
+    </select>
+
+    <!-- 특정 페이지의 게시판 리스트 쿼리 -->
+    <select id="getPagedNoticeList" resultType="NoticeDTO">
+        SELECT * FROM (
+                          SELECT
+                              N.NOTICE_SEQ,
+                              N.TITLE,
+                              N.CONTENTS,
+                              N.NOTICE_YN,
+                              N.READ_CNT,
+                              U.USER_NAME,
+                              COALESCE(U.NICKNAME, '탈퇴한 사용자') AS NICKNAME,
+                              N.USER_ID,
+                              DATE_FORMAT(N.REG_DT, '%y-%m-%d') AS REG_DT,
+                              ROW_NUMBER() OVER (ORDER BY N.NOTICE_YN, N.REG_DT DESC) AS row_num
+                          FROM NOTICE N
+                                   JOIN USER_INFO U ON N.USER_ID = U.USER_ID
+                      ) AS sub
+        WHERE sub.row_num BETWEEN #{startRow} AND #{endRow}
+    </select>
+
+
     <!-- 게시판 등록 쿼리 -->
     <insert id="insertNoticeInfo" parameterType="NoticeDTO">
         INSERT INTO NOTICE

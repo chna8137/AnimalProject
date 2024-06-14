@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Pet Sitting - Free Bootstrap 4 Template by Colorlib</title>
+    <title>커뮤니티</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -41,6 +41,7 @@
             color: black;
             background-color: transparent;
             border-color: black;
+            cursor: pointer;
         }
 
         @media (max-width: 780px) {
@@ -99,9 +100,9 @@
         <div class="row no-gutters slider-text align-items-end">
             <div class="col-md-9 ftco-animate pb-5">
                 <p class="breadcrumbs mb-2"><span class="mr-2"><a href="/index">Home <i
-                        class="ion-ios-arrow-forward"></i></a></span> <span>공지사항 <i
+                        class="ion-ios-arrow-forward"></i></a></span> <span>커뮤티니 <i
                         class="ion-ios-arrow-forward"></i></span></p>
-                <h1 class="mb-0 bread">공지사항</h1>
+                <h1 class="mb-0 bread">커뮤니티</h1>
             </div>
         </div>
     </div>
@@ -138,18 +139,29 @@
     <!-- 페이지 네이션 부분 -->
     <div class="row mt-5">
         <div class="col text-center">
-            <div class="block-27" th:href="@{/notice/noticeList(page=1)}">
+            <div class="block-27">
                 <ul>
-                    <li th:if="${currentPage > 1}">
-                        <a th:href="@{/notice/noticeList(page=${currentPage - 1})}">&lt;</a></li>
-
-                    <li class="active" th:each="pageNumber : ${#numbers.sequence(1, totalPages)}"
-                        th:class="${pageNumber == currentPage ? 'active' : ''}">
-                        <a th:href="@{/notice/noticeList(page=${pageNumber})}"
-                           th:text="${pageNumber}"></a></li>
-
-                    <li th:if="${currentPage < totalPages}">
-                        <a th:href="@{/notice/noticeList(page=${currentPage + 1})}">&gt;</a></li>
+                    <!-- 첫 페이지로 이동 버튼 -->
+                    <li th:if="${page > 1}">
+                        <a th:href="@{/notice/noticeList(page=1)}">&laquo;</a>
+                    </li>
+                    <!-- 이전 페이지 그룹으로 이동 버튼 -->
+                    <li th:if="${startPage > 1}">
+                        <a th:href="@{/notice/noticeList(page=${startPage - 1})}">&lt;</a>
+                    </li>
+                    <!-- 현재 페이지 그룹의 페이지 번호들 -->
+                    <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
+                        th:classappend="${i == page} ? 'active'">
+                        <a th:href="@{/notice/noticeList(page=${i})}" th:text="${i}"></a>
+                    </li>
+                    <!-- 다음 페이지 그룹으로 이동 버튼 -->
+                    <li th:if="${endPage < totalPages}">
+                        <a th:href="@{/notice/noticeList(page=${endPage + 1})}">&gt;</a>
+                    </li>
+                    <!-- 마지막 페이지로 이동 버튼 -->
+                    <li th:if="${page < totalPages}">
+                        <a th:href="@{/notice/noticeList(page=${totalPages})}">&raquo;</a>
+                    </li>
                 </ul>
             </div>
         </div>
