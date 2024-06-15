@@ -41,9 +41,14 @@ public class profileController {
     public String profile(ModelMap model, HttpSession session,
                           @RequestParam(defaultValue = "1") int page) throws Exception {
 
-        log.info(this.getClass().getName() + "마이페이지 조회 컨트롤러 시작!");
+        log.info(this.getClass().getName() + " 마이페이지 조회 컨트롤러 시작!");
 
         String userId = CmmUtil.nvl((String) session.getAttribute("SS_USER_ID"));
+
+        // 네이버 로그인 사용자 접근 차단
+        if (userId.startsWith("naver_")) {
+            return "redirect:/index";
+        }
 
         log.info("SS_USER_ID : " + userId);
 
@@ -52,22 +57,7 @@ public class profileController {
 
         UserInfoDTO rDTO = Optional.ofNullable(profileService.getProfile(pDTO)).orElseGet(UserInfoDTO::new);
 
-//        FileDTO fDTO = new FileDTO();
-//        pDTO.setImage(fDTO.getFileUrl());
-
         log.info("pDTO : " + pDTO);
-
-        // 이미지 가져오기
-//        List<FileDTO> rList = Optional.ofNullable(fileService.getFile(pDTO)).orElseGet(ArrayList::new);
-//
-//        log.info("rList : " + rList);
-//
-////        rList.add(rDTO.getImage(fDTO.getFileUrl()));
-//        model.addAttribute("rList", rList);
-
-//        log.info("rList : " + rList);
-
-        // 이미지 가져오기 종료
 
         log.info("복호화 전 Email : " + rDTO.getEmail());
 
@@ -79,18 +69,22 @@ public class profileController {
 
         log.info("회원정보 조회 rDTO.toString() : " + rDTO.toString());
 
-        log.info(this.getClass().getName() + "마이페이지 조회 컨트롤러 종료!");
+        log.info(this.getClass().getName() + " 마이페이지 조회 컨트롤러 종료!");
 
         return "user/profile";
-
     }
 
     @GetMapping(value = "/profileModify")
     public String profileModify(HttpSession session, ModelMap model) throws Exception {
 
-        log.info(this.getClass().getName() + "마이페이지 수정페이지 보여주기 시작!");
+        log.info(this.getClass().getName() + " 마이페이지 수정페이지 보여주기 시작!");
 
         String userId = CmmUtil.nvl((String) session.getAttribute("SS_USER_ID"));
+
+        // 네이버 로그인 사용자 접근 차단
+        if (userId.startsWith("naver_")) {
+            return "redirect:/index";
+        }
 
         log.info("세션에서 받아온 userId : " + userId);
 
@@ -100,18 +94,6 @@ public class profileController {
         log.info("pDTO : " + pDTO.toString());
 
         UserInfoDTO rDTO = Optional.ofNullable(profileService.getProfile(pDTO)).orElseGet(UserInfoDTO::new);
-
-        // 이미지 가져오기
-//        List<FileDTO> rList = Optional.ofNullable(fileService.getFile(pDTO)).orElseGet(ArrayList::new);
-//
-//        log.info("rList : " + rList);
-//
-////        rList.add(rDTO.getImage(fDTO.getFileUrl()));
-//        model.addAttribute("rList", rList);
-//
-//        log.info("rList : " + rList);
-
-        // 이미지 가져오기 종료
 
         log.info("DB에서 가져와 복호화 하기 전 이메일 : " + rDTO.getEmail());
 
@@ -123,7 +105,7 @@ public class profileController {
 
         log.info("회원정보 조회 rDTO.toString() : " + rDTO.toString());
 
-        log.info(this.getClass().getName() + "마이페이지 수정페이지 보여주기 종료!");
+        log.info(this.getClass().getName() + " 마이페이지 수정페이지 보여주기 종료!");
 
         return "user/profileModify";
     }
@@ -133,16 +115,24 @@ public class profileController {
     public MsgDTO updateProc(HttpSession session, HttpServletRequest request,
                              @RequestParam(value = "file", required = false) List<MultipartFile> files) {
 
-        log.info(this.getClass().getName() + "마이페이지 수정 시작!");
+        log.info(this.getClass().getName() + " 마이페이지 수정 시작!");
 
         String msg = "";
         int result = 0;
         MsgDTO rDTO = null;
 
-
         try {
 
             String userId = CmmUtil.nvl((String) session.getAttribute("SS_USER_ID"));
+
+            // 네이버 로그인 사용자 접근 차단
+            if (userId.startsWith("naver_")) {
+                rDTO = new MsgDTO();
+                rDTO.setMsg("네이버 로그인 사용자는 마이페이지를 수정할 수 없습니다.");
+                rDTO.setResult(0);
+                return rDTO;
+            }
+
             String userName = CmmUtil.nvl(request.getParameter("userName"));
             String nickname = CmmUtil.nvl(request.getParameter("nickname"));
             String addr1 = CmmUtil.nvl(request.getParameter("addr1"));
@@ -227,7 +217,7 @@ public class profileController {
             rDTO.setMsg(msg);
             rDTO.setResult(result);
 
-            log.info(this.getClass().getName() + "마이페이지 수정 종료!");
+            log.info(this.getClass().getName() + " 마이페이지 수정 종료!");
         }
 
         return rDTO;
