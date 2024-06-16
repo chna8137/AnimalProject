@@ -245,20 +245,6 @@ public class UserInfoController {
             // 로그인을 위해 아이디와 비밀번호가 일치하는지 확인하기 위한 userInfoService 호출하기
             UserInfoDTO rDTO = userInfoService.getLogin(pDTO);
 
-            /*
-             * 로그인을 성공했다면, 회원아이디 정보를 session에 저장함
-             *
-             * 세션은 톰켓(was)의 메모리에 존재하며, 웹사이트에 접속한 사람(연결된 객체)마다 메모리에 값을 올린다.
-             * 			 *
-             * 예) 톰켓에 100명의 사용자가 로그인했다면, 사용자 각각 회원아이디를 메모리에 저장하며.
-             *    메모리에 저장된 객체의 수는 100개이다.
-             *    따라서 과도한 세션은 톰켓의 메모리 부하를 발생시켜 서버가 다운되는 현상이 있을 수 있기때문에,
-             *    최소한으로 사용하는 것을 권장한다.
-             *
-             * 스프링에서 세션을 사용하기 위해서는 함수명의 파라미터에 HttpSession session 존재해야 한다.
-             * 세션은 톰켓의 메모리에 저장되기 때문에 url마다 전달하는게 필요하지 않고,
-             * 그냥 메모리에서 부르면 되기 때문에 jsp, controller에서 쉽게 불러서 쓸수 있다.
-             * */
             if (CmmUtil.nvl(rDTO.getUserId()).length() > 0) { //로그인 성공
 
                 res = 1;
@@ -413,37 +399,75 @@ public class UserInfoController {
      * <p>
      * 아이디, 이름, 이메일 일치하면, 비밀번호 재발급 화면 이동
      */
+    @ResponseBody
     @PostMapping(value = "searchPasswordProc")
-    public String searchPasswordProc(HttpServletRequest request, ModelMap model, HttpSession session) throws Exception {
+    public MsgDTO searchPasswordProc(HttpServletRequest request, HttpSession session) throws Exception {
         log.info(this.getClass().getName() + ".searchPasswordProc 컨트롤러 시작!");
 
-        String userId = CmmUtil.nvl(request.getParameter("userId")); // 아이디
-        String userName = CmmUtil.nvl(request.getParameter("userName")); // 이름
-        String email = CmmUtil.nvl(request.getParameter("email")); // 이메일
+        int res = 0; // 처리 결과를 저장할 변수 (성공 : 1, 실패 : 0, 시스템 에러 : 2)
+        String msg = ""; // 결과 메시지를 전달할 변수
+        MsgDTO dto = new MsgDTO(); // 결과 메시지 구조
+        String url = "/index";
 
-        log.info("userId : " + userId);
-        log.info("userName : " + userName);
-        log.info("email : " + email);
+        try {
+            String userId = CmmUtil.nvl(request.getParameter("userId")); // 아이디
+            String userName = CmmUtil.nvl(request.getParameter("userName")); // 이름
+            String email = CmmUtil.nvl(request.getParameter("email")); // 이메일
 
-        UserInfoDTO pDTO = new UserInfoDTO();
-        pDTO.setUserId(userId);
-        pDTO.setUserName(userName);
-        pDTO.setEmail(EncryptUtil.encAES128CBC(email));
+            log.info("userId : " + userId);
+            log.info("userName : " + userName);
+            log.info("email : " + email);
 
-        // 비밀번호 찾기 가능한지 확인하기
-        UserInfoDTO rDTO = Optional.ofNullable(userInfoService.searchUserIdOrPasswordProc(pDTO)).orElseGet(UserInfoDTO::new);
+            if (userId.isEmpty() || userName.isEmpty() || email.isEmpty()) {
+                msg = "아이디, 이름 및 이메일을 모두 입력해주세요.";
+                res = 0;
+            } else {
+                UserInfoDTO pDTO = new UserInfoDTO();
+                pDTO.setUserId(userId);
+                pDTO.setUserName(userName);
+                pDTO.setEmail(EncryptUtil.encAES128CBC(email));
 
-        model.addAttribute("rDTO", rDTO);
+                // 비밀번호 찾기 가능한지 확인하기
+                UserInfoDTO rDTO = Optional.ofNullable(userInfoService.searchUserIdOrPasswordProc(pDTO)).orElseGet(UserInfoDTO::new);
 
-
-        // 비밀번호 재생성하는 화면은 보안을 위해 반드시 NEW_PASSWORD 세션이 존재해야 접속 가능하도록 구현
-        // userId 값을 넣은 이유는 비밀번호 재설정하는 newPasswordProc 함수에서 사용하기 위함
-        session.setAttribute("NEW_PASSWORD", userId);
+                if ((rDTO.getUserName() == null || !rDTO.getUserName().equals(userName)) &&
+                        (rDTO.getEmail() == null || !rDTO.getEmail().equals(email)) &&
+                        (rDTO.getUserId() == null || !rDTO.getUserId().equals(userId))) {
+                    msg = "해당하는 사용자를 찾을 수 없습니다.";
+                    res = 0;
+                } else {
+                    res = 1;
+                    session.setAttribute("NEW_PASSWORD", userId);
+                    msg = "비밀번호 재설정 화면으로 이동합니다.";
+                }
+            }
+        } catch (Exception e) {
+            msg = "시스템 문제로 비밀번호 찾기가 실패했습니다.";
+            res = 2;
+            log.error(e.toString(), e); // 로그 레벨을 info에서 error로 변경
+        } finally {
+            dto.setResult(res);
+            dto.setMsg(msg);
+        }
 
         log.info(this.getClass().getName() + ".searchPasswordProc 컨트롤러 끝!");
 
-        return "user/newPasswordProc";
+        return dto;
+    }
+    @GetMapping(value = "newPassword")
+    public String newPassword(HttpSession session) {
+        log.info("새로운 비밀번호 설정 페이지 시작");
 
+        // NEW_PASSWORD 세션 확인
+        String newPasswordSession = CmmUtil.nvl((String) session.getAttribute("NEW_PASSWORD"));
+        if (newPasswordSession.isEmpty()) {
+            log.info("비정상 접근 시도");
+            return "redirect:/user/findPassword"; // 비정상 접근 시도 시 findPassword 페이지로 리다이렉트
+        }
+
+        log.info("새로운 비밀번호 설정 페이지 종료");
+
+        return "user/newPasswordProc";
     }
 
     /**
@@ -451,47 +475,59 @@ public class UserInfoController {
      * <p>
      * 아이디, 이름, 이메일 일치하면, 비밀번호 재발급 화면 이동
      */
+    @ResponseBody
     @PostMapping(value = "newPasswordProc")
-    public String newPasswordProc(HttpServletRequest request, ModelMap model, HttpSession session) throws Exception {
+    public MsgDTO newPasswordProc(HttpServletRequest request, HttpSession session) throws Exception {
 
-        log.info(this.getClass().getName() + ".user/newPasswordProc Start!");
+        log.info(this.getClass().getName() + ".controller 비밀번호 변경 시작!");
 
-        String msg = ""; // 웹에 보여줄 메시지
+        int res = 0; // 처리 결과를 저장할 변수 (성공 : 1, 실패 : 0, 시스템 에러 : 2)
+        String msg = ""; // 결과 메시지를 전달할 변수
+        MsgDTO dto = new MsgDTO(); // 결과 메시지 구조
 
-        // 정상적인 접근인지 체크
-        String newPassword = CmmUtil.nvl((String) session.getAttribute("NEW_PASSWORD"));
+        try {
+            // 정상적인 접근인지 체크
+            String newPassword = CmmUtil.nvl((String) session.getAttribute("NEW_PASSWORD"));
 
-        log.info("newPassword : " + newPassword);
+            log.info("newPassword : " + newPassword);
 
-        if (newPassword.length() > 0) { //정상 접근
+            if (newPassword.length() > 0) { // 정상 접근
+                String password = CmmUtil.nvl(request.getParameter("password")); // 신규 비밀번호
 
-            String password = CmmUtil.nvl(request.getParameter("password")); // 신규 비밀번호
+                log.info("userPassword : " + password);
 
-            log.info("userPassword : " + password);
+                UserInfoDTO pDTO = new UserInfoDTO();
+                pDTO.setUserId(newPassword);
+                pDTO.setPassword(EncryptUtil.encHashSHA256(password));
 
-            UserInfoDTO pDTO = new UserInfoDTO();
-            pDTO.setUserId(newPassword);
-            pDTO.setPassword(EncryptUtil.encHashSHA256(password));
+                // 비밀번호 업데이트
+                userInfoService.newPasswordProc(pDTO);
 
-            userInfoService.newPasswordProc(pDTO);
+                // 비밀번호 재생성하는 화면은 보안을 위해 생성한 NEW_PASSWORD 세션 삭제
+                session.setAttribute("NEW_PASSWORD", "");
+                session.removeAttribute("NEW_PASSWORD");
 
-            // 비밀번호 재생성하는 화면은 보안을 위해 생성한 NEW_PASSWORD 세션 삭제
-            session.setAttribute("NEW_PASSWORD", "");
-            session.removeAttribute("NEW_PASSWORD");
+                msg = "비밀번호가 재설정되었습니다.";
+                res = 1; // 성공
 
-            msg = "비밀번호가 재설정되었습니다.";
+            } else { // 비정상 접근
+                msg = "비정상 접근입니다.";
+                res = 0; // 실패
+            }
 
-        } else { // 비정상 접근
-            msg = "비정상 접근입니다.";
+        } catch (Exception e) {
+            msg = "시스템 문제로 비밀번호 변경이 실패했습니다.";
+            res = 2; // 시스템 에러
+            log.error(e.toString(), e);
+
+        } finally {
+            dto.setResult(res);
+            dto.setMsg(msg);
         }
 
-        model.addAttribute("msg", msg);
+        log.info(this.getClass().getName() + ".controller 비밀번호 변경 종료!");
 
-
-        log.info(this.getClass().getName() + ".user/newPasswordProc End!");
-
-        return "/index";
-
+        return dto;
     }
 
     /**
