@@ -10,15 +10,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link rel="stylesheet" href="/css/animate.css">
-
     <link rel="stylesheet" href="/css/owl.carousel.min.css">
     <link rel="stylesheet" href="/css/owl.theme.default.min.css">
     <link rel="stylesheet" href="/css/magnific-popup.css">
-
-
     <link rel="stylesheet" href="/css/bootstrap-datepicker.css">
     <link rel="stylesheet" href="/css/jquery.timepicker.css">
-
     <link rel="stylesheet" href="/css/flaticon.css">
     <link rel="stylesheet" href="/css/style.css">
 
@@ -47,6 +43,18 @@
                 margin-top: 0px;
             }
         }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .success-message {
+            color: blue;
+            font-size: 12px;
+            margin-top: 5px;
+        }
     </style>
 
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -58,35 +66,154 @@
         let nicknameCheck = "Y";
         // 이메일 중복체크 인증번호 발송 값
         let emailAuthNumber = "";
+        let verifiedEmail = "";
+
         // HTML로딩이 완료되고, 실행됨
         $(document).ready(function () {
             let f = document.getElementById("f"); // form 태그
+
+            // 실시간 유효성 검사
+            $("#id").on("input", function () {
+                validateUserId(f);
+                userIdCheck = "Y";
+                $("#userIdCheckMessage").text("");
+            });
+            $("#userName").on("input", function () {
+                validateUserName(f);
+            });
+            $("#nickname").on("input", function () {
+                validateNickname(f);
+                nicknameCheck = "Y";
+                $("#nicknameCheckMessage").text("");
+            });
+            $("#password").on("input", function () {
+                validatePassword(f);
+            });
+            $("#password2").on("input", function () {
+                validatePassword2(f);
+            });
+            $("#authNumber").on("input", function () {
+                validateAuthNumber(f);
+            }).on("keypress", function (e) {
+                // 숫자만 입력 가능하도록 함
+                if (e.which < 48 || e.which > 57) {
+                    e.preventDefault();
+                }
+            });
+
             // 아이디 중복체크
-            $("#btnUserId").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
-                userIdExists(f)
-            })
+            $("#btnUserId").on("click", function () {
+                userIdExists(f);
+            });
+
             // 닉네임 중복체크
-            $("#btnNickname").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            $("#btnNickname").on("click", function () {
                 nicknameExists(f);
-            })
+            });
+
             // 이메일 중복체크
-            $("#btnEmail").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
-                emailExists(f)
-            })
+            $("#btnEmail").on("click", function () {
+                emailExists(f);
+            });
+
             // 우편번호 찾기
-            $("#btnAddr").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            $("#btnAddr").on("click", function () {
                 kakaoPost(f);
-            })
+            });
+
             // 회원가입
-            $("#btnSend").on("click", function () { // 버튼 클릭했을때, 발생되는 이벤트 생성함(onclick 이벤트와 동일함)
+            $("#btnSend").on("click", function () {
                 doSubmit(f);
-            })
-        })
+            });
+        });
+
+        // 아이디 유효성 검사
+        function validateUserId(f) {
+            const userId = f.userId.value;
+            const userIdRegex = /^[a-zA-Z0-9]+$/;
+            const errorElement = $("#userIdError");
+
+            if (!userIdRegex.test(userId)) {
+                errorElement.text("아이디는 영어와 숫자로만 구성되어야 합니다.");
+                userIdCheck = "Y";
+            } else {
+                errorElement.text("");
+            }
+        }
+
+        // 이름 유효성 검사
+        function validateUserName(f) {
+            const userName = f.userName.value;
+            const userNameRegex = /^[가-힣a-zA-Z]+$/;
+            const errorElement = $("#userNameError");
+
+            if (!userNameRegex.test(userName)) {
+                errorElement.text("이름은 한글과 영어로만 구성되어야 합니다.");
+            } else {
+                errorElement.text("");
+            }
+        }
+
+        // 닉네임 유효성 검사
+        function validateNickname(f) {
+            const nickname = f.nickname.value;
+            const errorElement = $("#nicknameError");
+
+            if (nickname === "") {
+                errorElement.text("닉네임을 입력하세요.");
+            } else {
+                errorElement.text("");
+            }
+        }
+
+        // 비밀번호 유효성 검사
+        function validatePassword(f) {
+            const password = f.password.value;
+            const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+            const errorElement = $("#passwordError");
+
+            if (!passwordRegex.test(password)) {
+                errorElement.text("비밀번호는 영문, 숫자, 특수문자 포함 6자리 이상이어야 합니다.");
+            } else {
+                errorElement.text("");
+            }
+        }
+
+        // 비밀번호 확인 유효성 검사
+        function validatePassword2(f) {
+            const password = f.password.value;
+            const password2 = f.password2.value;
+            const errorElement = $("#password2Error");
+
+            if (password !== password2) {
+                errorElement.text("비밀번호가 일치하지 않습니다.");
+            } else {
+                errorElement.text("");
+            }
+        }
+
+        // 이메일 유효성 검사
+        function validateEmail(f) {
+            const email = f.email.value;
+            const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/;
+            const errorElement = $("#emailError");
+
+            if (!emailRegex.test(email)) {
+                errorElement.text("올바른 이메일 형식으로 작성해주세요.");
+            } else {
+                errorElement.text("");
+            }
+        }
 
         // 회원아이디 중복 체크
         function userIdExists(f) {
             if (f.userId.value === "") {
                 alert("아이디를 입력하세요.");
+                f.userId.focus();
+                return;
+            }
+            if (!/^[a-zA-Z0-9]+$/.test(f.userId.value)) {
+                alert("아이디 형식을 확인하세요.");
                 f.userId.focus();
                 return;
             }
@@ -103,6 +230,7 @@
                         } else { // 회원가입 실패
                             alert("가입 가능한 아이디입니다.");
                             userIdCheck = "N";
+                            $("#userIdCheckMessage").text("가입 가능한 아이디입니다.").addClass("success-message");
                         }
                     }
                 }
@@ -112,7 +240,7 @@
         // 닉네임 중복 체크
         function nicknameExists(f) {
             if (f.nickname.value === "") {
-                alert("닉네임를 입력하세요.");
+                alert("닉네임을 입력하세요.");
                 f.nickname.focus();
                 return;
             }
@@ -125,10 +253,11 @@
                     success: function (json) { // 호출이 성공했다면..
                         if (json.existsYn === "Y") {
                             alert("이미 가입된 닉네임이 존재합니다.");
-                            f.userId.focus();
+                            f.nickname.focus();
                         } else {
                             alert("사용 가능한 닉네임입니다.");
                             nicknameCheck = "N";
+                            $("#nicknameCheckMessage").text("사용 가능한 닉네임입니다.").addClass("success-message");
                         }
                     }
                 }
@@ -147,7 +276,7 @@
                 f.email.focus();
                 return;
             }
-            // Ajax 호출해서 회원가입하기
+            // Ajax 호출해서 이메일 인증번호 발송하기
             $.ajax({
                     url: "/user/getEmailExists",
                     type: "post", // 전송방식은 Post
@@ -160,6 +289,7 @@
                         } else {
                             alert("이메일로 인증번호가 발송되었습니다. \n받은 메일의 인증번호를 입력하기 바랍니다.");
                             emailAuthNumber = json.authNumber;
+                            verifiedEmail = f.email.value; // 인증된 이메일 저장
                         }
                     }
                 }
@@ -168,7 +298,7 @@
 
         // 이메일 형식 체크
         function isEmailValid(email) {
-            const emailRegex = /^[a-zA-Z]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/;
+            const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/;
             return emailRegex.test(email);
         }
 
@@ -267,6 +397,11 @@
                 f.authNumber.focus();
                 return;
             }
+            if (f.email.value !== verifiedEmail) {
+                alert("인증된 이메일과 현재 입력된 이메일이 일치하지 않습니다.");
+                f.email.focus();
+                return;
+            }
             if (f.addr1.value === "") {
                 alert("주소를 입력하세요.");
                 f.addr1.focus();
@@ -283,12 +418,12 @@
                 type: "post", // 전송방식은 Post
                 dataType: "JSON", // 전송 결과는 JSON으로 받기
                 data: $("#f").serialize(), // form 태그 내 input 등 객체를 자동으로 전송할 형태로 변경하기
-                success: function (json) { // /notice/noticeUpdate 호출이 성공했다면..
-                    if (json.result === 1) { // 회원가입 성공
-                        alert(json.msg); // 메시지 띄우기
-                        location.href = "/user/login"; // 로그인 페이지 이동
-                    } else { // 회원가입 실패
-                        alert(json.msg); // 메시지 띄우기
+                success: function (json) {
+                    if (json.result === 1) {
+                        alert(json.msg);
+                        location.href = "/user/login";
+                    } else {
+                        alert(json.msg);
                     }
                 }
             });
@@ -338,6 +473,8 @@
                                                     <input type="text" class="form-control" name="userId" id="id"
                                                            placeholder="아이디"
                                                            style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
+                                                    <div id="userIdError" class="error-message"></div>
+                                                    <div id="userIdCheckMessage" class="success-message"></div>
                                                 </div>
                                             </div>
                                             <button id="btnUserId" class="botton" type="button">중복체크</button>
@@ -349,6 +486,7 @@
                                                     <input type="text" class="form-control" name="userName" id="userName"
                                                            placeholder="이름"
                                                            style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
+                                                    <div id="userNameError" class="error-message"></div>
                                                 </div>
                                             </div>
                                             <div class="col-md-9">
@@ -358,6 +496,8 @@
                                                     <input type="text" class="form-control" name="nickname" id="nickname"
                                                            placeholder="닉네임"
                                                            style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
+                                                    <div id="nicknameError" class="error-message"></div>
+                                                    <div id="nicknameCheckMessage" class="success-message"></div>
                                                 </div>
                                             </div>
                                             <button id="btnNickname" class="botton" type="button">중복체크</button>
@@ -369,7 +509,7 @@
                                                            id="password"
                                                            placeholder="비밀번호"
                                                            style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
-                                                    <p style="font-size: 12px; color: darkgrey">영어/숫자/특수문자 조합으로 최소 6자 이상</p>
+                                                    <div id="passwordError" class="error-message"></div>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -380,6 +520,7 @@
                                                            id="password2"
                                                            placeholder="비밀번호 확인"
                                                            style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
+                                                    <div id="password2Error" class="error-message"></div>
                                                 </div>
                                             </div>
                                             <div class="col-md-5">
@@ -389,6 +530,7 @@
                                                     <input type="email" class="form-control" name="email" id="email"
                                                            placeholder="이메일" pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" required
                                                            style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
+                                                    <!--                                                    <div id="emailError" class="error-message"></div>-->
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
@@ -396,8 +538,9 @@
                                                     <label class="label" for="authNumber"
                                                            style="color: #AB4501 !important; text-transform: uppercase; font-size: 12px; font-weight: 600">인증번호 </label>
                                                     <input type="text" class="form-control" name="authNumber" id="authNumber"
-                                                           placeholder="인증번호"
+                                                           placeholder="인증번호" inputmode="numeric" pattern="\d*"
                                                            style="border: none;border-bottom: 1px solid rgba(0, 0, 0, 0.1);padding: 0;">
+<!--                                                    <div id="authNumberError" class="error-message"></div>-->
                                                 </div>
                                             </div>
                                             <button id="btnEmail" type="button" class="botton">이메일 인증</button>
@@ -441,5 +584,13 @@
         </div>
     </section>
 </form>
+
+<script>
+    // 인증번호 입력란에서 한글 입력 방지
+    document.getElementById('authNumber').addEventListener('input', function (e) {
+        this.value = this.value.replace(/[^\d]/g, '');  // 숫자가 아닌 문자 모두 제거
+    });
+</script>
+
 </body>
 </html>
