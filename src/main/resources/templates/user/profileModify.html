@@ -271,6 +271,7 @@
                 reader.readAsDataURL(file);
             }
         }
+
         // 이미지 삭제
         function removeImage(button) {
             let fileName = $(button).val();
@@ -388,13 +389,6 @@
                         <div class="profile-picture">
                             <img th:src="${rDTO.fileUrl}" width="100%" alt="Image">
                             <br><br>
-<!--                            <div th:if="${rList != null and not #lists.isEmpty(rList)}">-->
-<!--                                <div th:each="dto : ${rList}">-->
-<!--                                    <img th:if="${dto.fileUrl != null}" th:src="${dto.fileUrl}" width="100%" alt="Image">-->
-<!--                                    <img th:if="${dto.fileUrl == null}" src="/img/profile.png" width="100%" alt="Default Image">-->
-<!--                                    <br><br>-->
-<!--                                </div>-->
-<!--                            </div>-->
                             <div id="preview"></div>
                         </div>
                         <input id="file-input" type="file" multiple style="margin-top: 20px; margin-left: 12%">

@@ -33,7 +33,7 @@ public class UserInfoDTO {
 
     private String chgDt;
 
-    private String image; // 프로필 이미지
+    private String fileUrl; // 프로필 이미지
 
     // 회원가입시, 중복가입을 방지를 위해 사용할 변수
     private String existsYn;
