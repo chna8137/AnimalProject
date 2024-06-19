@@ -190,20 +190,27 @@ public class AbandonedService implements IAbandonedService {
 
         // 날짜 형식을 "yyyyMMdd"로 정의
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        // 현재 날짜 가져오기
-        Date today = new Date();
+        // 현재 날짜의 시작 지점을 가져오기
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date todayStart = cal.getTime();
 
-        // 마감기한이 7일 이하로 남은 유기동물만 필터링하고, 마감기한이 가까운 순으로 정렬하여 상위 3개의 데이터를 반환
+        // 내일 날짜의 시작 지점을 가져오기
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        Date tomorrowStart = cal.getTime();
+
+        // 마감기한이 1일 이하로 남은 유기동물만 필터링하고, 마감기한이 가까운 순으로 정렬하여 상위 6개의 데이터를 반환
         return allAbandonedList.stream()
-                // 마감기한이 7일 이하로 남은 유기동물만 필터링
+                // 마감기한이 1일 이하로 남은 유기동물만 필터링
                 .filter(dto -> {
                     try {
                         // 유기동물의 마감기한을 Date 객체로 변환
                         Date endDate = sdf.parse(dto.pblancEndDe());
-                        // 마감기한과 오늘 날짜의 차이를 계산
-                        long diff = endDate.getTime() - today.getTime();
-                        // 마감기한이 7일 이하로 남고, 마감기한이 오늘 날짜보다 이후인 경우 true를 반환
-                        return diff <= 7 * 24 * 60 * 60 * 1000L && diff >= 0;
+                        // 마감기한이 오늘 또는 내일인 경우 true를 반환
+                        return !endDate.before(todayStart) && endDate.before(tomorrowStart);
                     } catch (Exception e) {
                         // 날짜 변환 중 오류가 발생하면 로그를 남기고 false를 반환
                         log.error("Date parsing error", e);
@@ -220,10 +227,11 @@ public class AbandonedService implements IAbandonedService {
                         return new Date(Long.MAX_VALUE);
                     }
                 }))
-                // 상위 3개의 데이터를 제한
+                // 상위 6개의 데이터를 제한
                 .limit(6)
                 // 결과를 리스트로 변환하여 반환
                 .collect(Collectors.toList());
+
     }
 
     @Override
