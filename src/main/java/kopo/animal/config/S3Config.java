@@ -19,10 +19,13 @@ public class S3Config {
 
     @Bean
     public AmazonS3Client amazonS3Client() {
+        // AWS 계정의 인증 정보를 기반으로 BasicAWSCredentials 객체 생성
         BasicAWSCredentials awsCredentials = new BasicAWSCredentials(naverClientId, naverSecretKey);
+
+        // AmazonS3 클라이언트를 빌더를 사용하여 생성
         return (AmazonS3Client) AmazonS3ClientBuilder.standard()
-                .withRegion(region)
-                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
-                .build();
+                .withRegion(region) // 사용할 AWS 리전 설정
+                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials)) // 생성한 인증 정보 제공자에 설정
+                .build(); // AmazonS3 클라이언트를 빌드하여 반환
     }
 }

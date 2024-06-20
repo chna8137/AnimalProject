@@ -41,24 +41,31 @@ public class S3Service implements IS3Service {
 
         log.info(this.getClass().getName() + ".uploadFile 서비스 시작!");
 
+        // 데이터 저장을 위한 경로 생성
         String uploadFilePath = FileUtil.mkdirForData();
+        // 업로드할 파일명 생성 (날짜시간 + 확장자)
         String uploadFileName = DateUtil.getDateTime("yyyyMMddHHmmss") + ext;
-        String uploadFileUrl = "";
+        String uploadFileUrl = "";  // 업로드된 파일 URL 초기화
 
+        // 업로드할 파일의 메타데이터 설정
         ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(mf.getSize());
-        objectMetadata.setContentType(mf.getContentType());
+        objectMetadata.setContentLength(mf.getSize()); // 파일 크기 설정
+        objectMetadata.setContentType(mf.getContentType()); // 파일 타입 설정
 
         try (InputStream inputStream = mf.getInputStream()) {
 
+            // S3에 저장될 객체 키 생성
             String keyName = uploadFilePath + uploadFileName; // ex) 구분/년/월/일/파일.확장자
+            // S3에 접근할 URL 생성
             uploadFileUrl = endPoint + "/" + bucketName + keyName;
 
             log.info("uploadFileName : " + uploadFileName);
             log.info("uploadFilePath : " + uploadFilePath);
             log.info("keyName : " + keyName);
 
+            // AWS 인증 정보 설정
             BasicAWSCredentials awsCredentials = new BasicAWSCredentials(naverClientId, naverSecretKey);
+            // Amazon S3 클라이언트 생성 및 엔드포인트 설정
             AmazonS3Client amazonS3Client = new AmazonS3Client(awsCredentials);
             amazonS3Client.setEndpoint(endPoint);
 
@@ -73,10 +80,12 @@ public class S3Service implements IS3Service {
 
         } catch (IOException e) {
             e.printStackTrace();
+            // 파일 업로드 실패 시 로그 출력
             log.error("Filed upload failed", e);
 
         }
 
+        // 업로드된 파일 정보를 담은 FileDTO 객체 반환
         return FileDTO.builder()
                 .fileUrl(uploadFileUrl)
                 .fileName(uploadFileName)
