@@ -1,7 +1,6 @@
 package kopo.animal.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mongodb.client.MongoCollection;
 import kopo.animal.dto.AbandonedDTO;
 import kopo.animal.persistance.mapper.IAbandonedMapper;
 import kopo.animal.service.IAbandonedService;
@@ -12,10 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.swing.text.Document;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,12 +24,11 @@ public class AbandonedService implements IAbandonedService {
     private final IAbandonedMapper abandonedMapper;
 
     private final RestTemplate restTemplate;
-
     @Value("${abandoned.api_key}")
     private String key;
 
+    // 유기동물 정보 수집 스케줄링 (매주 일요일 밤 11시 59분 59초에 실행)
     @Scheduled(cron = "59 59 23 * * 0")
-    @Override
     public int collectAbandoned() throws Exception {
 
 
@@ -45,18 +40,23 @@ public class AbandonedService implements IAbandonedService {
         // 기존 컬렉션 삭제
         abandonedMapper.deleteAbandoned(colNm);
 
+        // API 호출 관련 변수 설정
         String url = "https://openapi.gg.go.kr/AbdmAnimalProtect";
         String type = "json";
         String pSize = "1000"; // 페이지 당 최대 항목 수
         int pageNo = 1; // 초기 페이지 번호
         boolean hasMoreData = true; // 더 많은 데이터가 있는지 여부
 
+        // 수집된 유기동물 정보를 담을 리스트
         List<AbandonedDTO> pList = new LinkedList<>();
 
+        // 더 많은 데이터가 있을 경우 반복하여 수집
         while (hasMoreData) {
+            // API 요청 파라미터 설정
             String apiParam = "?KEY=" + key + "&Type=" + type + "&pSize=" + pSize + "&pIndex=" + pageNo;
             log.info("apiParam : " + apiParam);
 
+            // API 요청 후 응답 데이터 JSON 형태로 받기
             String json = NetworkUtil.get(url + apiParam);
             log.info("json : " + json);
 
@@ -66,6 +66,7 @@ public class AbandonedService implements IAbandonedService {
             // 유기동물 정보를 갖고 있는 row 키의 값 가져오기
             List<Map<String, Object>> abdmAnimalProtectList = (List<Map<String, Object>>) rMap.get("AbdmAnimalProtect");
 
+            // 유기동물 정보가 있을 경우
             if (abdmAnimalProtectList != null && !abdmAnimalProtectList.isEmpty()) {
                 boolean hasRows = false;
                 for (Map<String, Object> item : abdmAnimalProtectList) {
@@ -73,6 +74,7 @@ public class AbandonedService implements IAbandonedService {
                         hasRows = true;
                         List<Map<String, Object>> rowList = (List<Map<String, Object>>) item.get("row");
                         for (Map<String, Object> rowMap : rowList) {
+                            // 유기동물 정보 추출
                             String idntfyNo = String.valueOf(rowMap.get("ABDM_IDNTFY_NO"));
                             String receptDe = String.valueOf(rowMap.get("RECEPT_DE"));
                             String plcInfo = String.valueOf(rowMap.get("DISCVRY_PLC_INFO"));
@@ -102,6 +104,7 @@ public class AbandonedService implements IAbandonedService {
                             String lat = String.valueOf(rowMap.get("REFINE_WGS84_LAT"));
                             String lon = String.valueOf(rowMap.get("REFINE_WGS84_LOGT"));
 
+                            // 유기동물 DTO 생성 및 리스트에 추가
                             AbandonedDTO pDTO = AbandonedDTO.builder()
                                     .idntfyNo(idntfyNo)
                                     .receptDe(receptDe)
@@ -148,6 +151,7 @@ public class AbandonedService implements IAbandonedService {
         }
 
 //        log.info("pList : " + pList);
+
         // MongoDB에 데이터 저장하기
         res = abandonedMapper.insertAbandoned(pList, colNm);
 
@@ -155,6 +159,8 @@ public class AbandonedService implements IAbandonedService {
 
         return res;
     }
+
+
 
     @Override
     public List<AbandonedDTO> getAbandonedList() throws Exception {
@@ -164,6 +170,7 @@ public class AbandonedService implements IAbandonedService {
         // MongoDB에 저장된 컬렉션 이름
         String colNm = "ANIMAL_ABANDONED";
 
+        // 유기동물 리스트 가져오기
         List<AbandonedDTO> rList = abandonedMapper.getAbandonedList(colNm);
 
         log.info(this.getClass().getName() + ".service 유기동물 리스트 종료!!");

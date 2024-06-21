@@ -31,6 +31,7 @@ public class AbandonedMapper extends AbstractMongoDBComon implements IAbandonedM
 
         int res = 0;
 
+        // 유기동물 리스트가 null일 경우 빈 리스트로 초기화
         if (pList == null) {
             pList = new LinkedList<>();
         }
@@ -38,8 +39,8 @@ public class AbandonedMapper extends AbstractMongoDBComon implements IAbandonedM
         // 저장할 컬렉션 객체 생성
         MongoCollection<Document> col = mongodb.getCollection(colNm);
 
+        // 유기동물 리스트를 반복하며 레코드 한 개씩 저장
         for (AbandonedDTO pDTO : pList) {
-            // 레코드 한 개씩 저장하기
             col.insertOne(new Document(new ObjectMapper().convertValue(pDTO, Map.class)));
         }
 
@@ -58,8 +59,10 @@ public class AbandonedMapper extends AbstractMongoDBComon implements IAbandonedM
         // 조회 결과를 전달하기 위한 객체 생성하기
         List<AbandonedDTO> rList = new LinkedList<>();
 
+        // 컬렉션 객체 가져오기
         MongoCollection<Document> col = mongodb.getCollection(colNm);
 
+        // 조회할 필드 설정
         Document projection = new Document();
 
         projection.append("age", "$age");
@@ -89,8 +92,10 @@ public class AbandonedMapper extends AbstractMongoDBComon implements IAbandonedM
         projection.append("weight", "$weight");
         projection.append("_id", 0);
 
+        // MongoDB에서 데이터 조회
         FindIterable<Document> rs = col.find(new Document()).projection(projection);
 
+        // 조회 결과를 DTO 리스트로 변환
         for (Document doc : rs) {
             String age = CmmUtil.nvl(doc.getString("age"));
             String color = CmmUtil.nvl(doc.getString("color"));
@@ -118,6 +123,7 @@ public class AbandonedMapper extends AbstractMongoDBComon implements IAbandonedM
             String thumbImageCours = CmmUtil.nvl(doc.getString("thumbImageCours"));
             String weight = CmmUtil.nvl(doc.getString("weight"));
 
+            // DTO 객체 생성
             AbandonedDTO rDTO = AbandonedDTO.builder()
                     .age(age)
                     .color(color)
@@ -146,6 +152,7 @@ public class AbandonedMapper extends AbstractMongoDBComon implements IAbandonedM
                     .weight(weight)
                     .build();
 
+            // 리스트에 DTO 추가
             rList.add(rDTO);
         }
 
@@ -168,6 +175,7 @@ public class AbandonedMapper extends AbstractMongoDBComon implements IAbandonedM
         // idntfyNo로 필터링 ( 추가 )
         Document query = new Document("idntfyNo", idntfyNo);
 
+        // 조회할 필드 설정
         Document projection = new Document();
 
         projection.append("age", "$age");
@@ -200,6 +208,7 @@ public class AbandonedMapper extends AbstractMongoDBComon implements IAbandonedM
         // find 고유번호로 필터링
         FindIterable<Document> rs = col.find(query).projection(projection);
 
+        // 조회 결과를 DTO로 변환
         Document doc = rs.first();
         if (doc != null) {
             rDTO = AbandonedDTO.builder()

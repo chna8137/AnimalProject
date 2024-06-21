@@ -1,17 +1,14 @@
 package kopo.animal.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import kopo.animal.controller.response.CommonResponse;
 import kopo.animal.dto.AbandonedDTO;
 import kopo.animal.dto.MsgDTO;
 import kopo.animal.service.IAbandonedService;
-import kopo.animal.util.CmmUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +24,7 @@ public class AbandonedController {
 
     private final IAbandonedService abandonedService;
 
+
     /**
      * 유기동물 리스트 저장하기
      */
@@ -36,9 +34,10 @@ public class AbandonedController {
 
         log.info(this.getClass().getName() + ".controller 유기동물 정보 저장 시작!!!");
 
-        // 수집 결과 출력
+        // 수집 결과 메시지
         String msg = "";
 
+        // 유기동물 정보 수집 결과
         int res = abandonedService.collectAbandoned();
 
         if (res == 1) {
@@ -49,12 +48,14 @@ public class AbandonedController {
 
         }
 
+        // 결과 메시지를 담은 DTO 생성
         MsgDTO dto = new MsgDTO();
         dto.setResult(res);
         dto.setMsg(msg);
 
         log.info(this.getClass().getName() + ".controller 유기동물 정보 저장 종료!!!");
 
+        // 응답 반환
         return ResponseEntity.ok(
                 CommonResponse.of(HttpStatus.OK, HttpStatus.OK.series().name(), dto));
     }
@@ -67,6 +68,7 @@ public class AbandonedController {
 
         log.info(this.getClass().getName() + ".controller 유기동물 정보 가져오기 시작!");
 
+        // 유기동물 리스트 가져오기
         List<AbandonedDTO> rList = Optional.ofNullable(abandonedService.getAbandonedList())
                 .orElseGet(ArrayList::new);
 
@@ -103,7 +105,7 @@ public class AbandonedController {
 
         model.addAttribute("rList", rList);
 
-        log.info("rList : " + rList);
+//        log.info("rList : " + rList);
 
 
         log.info(this.getClass().getName() + ".controller 유기동물 정보 가져오기 끝!");
@@ -132,6 +134,5 @@ public class AbandonedController {
 
         return "abandoned/abandonedInfo";
     }
-
 
 }
