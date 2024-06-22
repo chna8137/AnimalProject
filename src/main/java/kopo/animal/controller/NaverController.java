@@ -41,12 +41,15 @@ public class NaverController {
         String url = "";
         int res; // 회원 가입 결과 /// 1 성공, 2 이미 가입
 
+        // 네이버 서비스를 통해 엑세스 토큰 받아오기
         TokenDTO tokenDTO = naverService.getAccessToken(code);
 
         log.info("네이버 엑세스 토큰 : " + tokenDTO.getAccess_token());
 
+        // 네이버 서비스를 통해 네이버 사용자 정보 가져오기
         NaverDTO naverDTO = naverService.getNaverUserInfo(tokenDTO);
 
+        // 네이버 아이디 생성 및 네이버 사용자 이름 가져오기
         String userId = "naver_" + naverDTO.getResponse().getId();
         String userName = naverDTO.getResponse().getName();
 
@@ -102,6 +105,7 @@ public class NaverController {
             }
 
         } else {
+            // 이미 계정 보유 시 로그인 처리
             log.info("계정 보유로 로그인 실행");
 
             session.setAttribute("SS_USER_ID", userId);

@@ -136,9 +136,12 @@ public class CalendarController {
         pDTO.setStart(start);
         pDTO.setEnd(end);
 
+        // 일정 리스트 조회 서비스 호출하여 결과 받기
         List<CalendarDTO> rList = Optional.ofNullable(calendarService.getCalendarList(pDTO)).orElseGet(ArrayList::new);
 
+        // 반환할 이벤트 리스트 생성
         List<Map<String, Object>> events = new ArrayList<>();
+        // 조회된 일정 데이터를 Map 형태로 변환하여 리스트에 추가
         for (CalendarDTO dto : rList) {
             Map<String, Object> event = new HashMap<>();
             event.put("calendarSeq", dto.getCalendarSeq());
@@ -260,17 +263,11 @@ public class CalendarController {
         log.info(".controller 일정 일자 가져오기 실행");
 
         String userId = CmmUtil.nvl((String) session.getAttribute("SS_USER_ID"));
-//        String doMonth = CmmUtil.nvl(request.getParameter("doMonth"));
-//        String nextMonth = CmmUtil.nvl(request.getParameter("nextMonth"));
 
         log.info("userId : " + userId);
-//        log.info("doMonth : " + doMonth);
-//        log.info("nextMonth : " + nextMonth);
 
         CalendarDTO pDTO = new CalendarDTO();
         pDTO.setUserId(userId);
-//        pDTO.setDoMonth(doMonth);
-//        pDTO.setNextMonth(nextMonth);
 
         List<CalendarDTO> sList = Optional.ofNullable(calendarService.checkCalendar(pDTO)).orElseGet(ArrayList::new);
 

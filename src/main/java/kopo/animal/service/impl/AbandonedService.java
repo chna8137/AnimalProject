@@ -69,84 +69,88 @@ public class AbandonedService implements IAbandonedService {
             // 유기동물 정보가 있을 경우
             if (abdmAnimalProtectList != null && !abdmAnimalProtectList.isEmpty()) {
                 boolean hasRows = false;
+                // 유기동물 리스트 순회
                 for (Map<String, Object> item : abdmAnimalProtectList) {
+                    // 항목이 "row" 키를 포함하는지 확인
                     if (item.containsKey("row")) {
                         hasRows = true;
+                        // "row" 리스트 가져오기
                         List<Map<String, Object>> rowList = (List<Map<String, Object>>) item.get("row");
+                        // "row" 리스트 순회
                         for (Map<String, Object> rowMap : rowList) {
                             // 유기동물 정보 추출
-                            String idntfyNo = String.valueOf(rowMap.get("ABDM_IDNTFY_NO"));
-                            String receptDe = String.valueOf(rowMap.get("RECEPT_DE"));
-                            String plcInfo = String.valueOf(rowMap.get("DISCVRY_PLC_INFO"));
-                            String state = String.valueOf(rowMap.get("STATE_NM"));
-                            String pblancIdntfuNo = String.valueOf(rowMap.get("PBLANC_IDNTFY_NO"));
-                            String pblancBeginDe = String.valueOf(rowMap.get("PBLANC_BEGIN_DE"));
-                            String pblancEndDe = String.valueOf(rowMap.get("PBLANC_END_DE"));
-                            String species = String.valueOf(rowMap.get("SPECIES_NM"));
-                            String color = String.valueOf(rowMap.get("COLOR_NM"));
-                            String age = String.valueOf(rowMap.get("AGE_INFO"));
-                            String weight = String.valueOf(rowMap.get("BDWGH_INFO"));
-                            String sex = String.valueOf(rowMap.get("SEX_NM"));
-                            String neut = String.valueOf(rowMap.get("NEUT_YN"));
-                            String sfetrInfo = String.valueOf(rowMap.get("SFETR_INFO"));
-                            String shterNm = String.valueOf(rowMap.get("SHTER_NM"));
-                            String shterTelno = String.valueOf(rowMap.get("SHTER_TELNO"));
-                            String protectPlc = String.valueOf(rowMap.get("PROTECT_PLC"));
-                            String refineRoadnmAddr = String.valueOf(rowMap.get("REFINE_ROADNM_ADDR"));
-                            String refineLotnoAddr = String.valueOf(rowMap.get("REFINE_LOTNO_ADDR"));
-                            String refineZipCd = String.valueOf(rowMap.get("REFINE_ZIP_CD"));
-                            String jurisdInstNm = String.valueOf(rowMap.get("JURISD_INST_NM"));
-                            String chrgpsnNm = String.valueOf(rowMap.get("CHRGPSN_NM"));
-                            String chrgpsnContctNo = String.valueOf(rowMap.get("CHRGPSN_CONTCT_NO"));
-                            String partclrMatr = String.valueOf(rowMap.get("PARTCLR_MATR"));
-                            String imageCours = String.valueOf(rowMap.get("IMAGE_COURS"));
-                            String thumbImageCours = String.valueOf(rowMap.get("THUMB_IMAGE_COURS"));
-                            String lat = String.valueOf(rowMap.get("REFINE_WGS84_LAT"));
-                            String lon = String.valueOf(rowMap.get("REFINE_WGS84_LOGT"));
+                            String idntfyNo = String.valueOf(rowMap.get("ABDM_IDNTFY_NO")); // 식별 번호
+                            String receptDe = String.valueOf(rowMap.get("RECEPT_DE")); // 접수 일자
+                            String plcInfo = String.valueOf(rowMap.get("DISCVRY_PLC_INFO")); // 발견 장소 정보
+                            String state = String.valueOf(rowMap.get("STATE_NM")); // 상태명
+                            String pblancIdntfuNo = String.valueOf(rowMap.get("PBLANC_IDNTFY_NO")); // 공고 식별 번호
+                            String pblancBeginDe = String.valueOf(rowMap.get("PBLANC_BEGIN_DE")); // 공고 시작 일자
+                            String pblancEndDe = String.valueOf(rowMap.get("PBLANC_END_DE")); // 공고 종료 일자
+                            String species = String.valueOf(rowMap.get("SPECIES_NM")); // 종
+                            String color = String.valueOf(rowMap.get("COLOR_NM")); // 색상
+                            String age = String.valueOf(rowMap.get("AGE_INFO")); // 나이 정보
+                            String weight = String.valueOf(rowMap.get("BDWGH_INFO")); // 체중 정보
+                            String sex = String.valueOf(rowMap.get("SEX_NM")); // 성별
+                            String neut = String.valueOf(rowMap.get("NEUT_YN")); // 중성화 여부
+                            String sfetrInfo = String.valueOf(rowMap.get("SFETR_INFO")); // 특징 정보
+                            String shterNm = String.valueOf(rowMap.get("SHTER_NM")); // 보호소 이름
+                            String shterTelno = String.valueOf(rowMap.get("SHTER_TELNO")); // 보호소 전화번호
+                            String protectPlc = String.valueOf(rowMap.get("PROTECT_PLC")); // 보호 장소
+                            String refineRoadnmAddr = String.valueOf(rowMap.get("REFINE_ROADNM_ADDR")); // 도로명 주소
+                            String refineLotnoAddr = String.valueOf(rowMap.get("REFINE_LOTNO_ADDR")); // 지번 주소
+                            String refineZipCd = String.valueOf(rowMap.get("REFINE_ZIP_CD")); // 우편번호
+                            String jurisdInstNm = String.valueOf(rowMap.get("JURISD_INST_NM")); // 관할 기관명
+                            String chrgpsnNm = String.valueOf(rowMap.get("CHRGPSN_NM")); // 담당자 이름
+                            String chrgpsnContctNo = String.valueOf(rowMap.get("CHRGPSN_CONTCT_NO")); // 담당자 연락처
+                            String partclrMatr = String.valueOf(rowMap.get("PARTCLR_MATR")); // 특이 사항
+                            String imageCours = String.valueOf(rowMap.get("IMAGE_COURS")); // 이미지 경로
+                            String thumbImageCours = String.valueOf(rowMap.get("THUMB_IMAGE_COURS")); // 썸네일 이미지 경로
+                            String lat = String.valueOf(rowMap.get("REFINE_WGS84_LAT")); // 위도
+                            String lon = String.valueOf(rowMap.get("REFINE_WGS84_LOGT")); // 경도
 
                             // 유기동물 DTO 생성 및 리스트에 추가
                             AbandonedDTO pDTO = AbandonedDTO.builder()
-                                    .idntfyNo(idntfyNo)
-                                    .receptDe(receptDe)
-                                    .plcInfo(plcInfo)
-                                    .state(state)
-                                    .pblancIdntfuNo(pblancIdntfuNo)
-                                    .pblancBeginDe(pblancBeginDe)
-                                    .pblancEndDe(pblancEndDe)
-                                    .species(species)
-                                    .color(color)
-                                    .age(age)
-                                    .weight(weight)
-                                    .sex(sex)
-                                    .neut(neut)
-                                    .sfetrInfo(sfetrInfo)
-                                    .shterNm(shterNm)
-                                    .shterTelno(shterTelno)
-                                    .protectPlc(protectPlc)
-                                    .refineRoadnmAddr(refineRoadnmAddr)
-                                    .refineLotnoAddr(refineLotnoAddr)
-                                    .refineZipCd(refineZipCd)
-                                    .jurisdInstNm(jurisdInstNm)
-                                    .chrgpsnNm(chrgpsnNm)
-                                    .chrgpsnContctNo(chrgpsnContctNo)
-                                    .partclrMatr(partclrMatr)
-                                    .imageCours(imageCours)
-                                    .thumbImageCours(thumbImageCours)
-                                    .lat(lat)
-                                    .lon(lon)
-                                    .build();
+                                    .idntfyNo(idntfyNo) // 식별 번호 설정
+                                    .receptDe(receptDe) // 접수 일자 설정
+                                    .plcInfo(plcInfo) // 발견 장소 정보 설정
+                                    .state(state) // 상태명 설정
+                                    .pblancIdntfuNo(pblancIdntfuNo) // 공고 식별 번호 설정
+                                    .pblancBeginDe(pblancBeginDe) // 공고 시작 일자 설정
+                                    .pblancEndDe(pblancEndDe) // 공고 종료 일자 설정
+                                    .species(species) // 종 설정
+                                    .color(color) // 색상 설정
+                                    .age(age) // 나이 정보 설정
+                                    .weight(weight) // 체중 정보 설정
+                                    .sex(sex) // 성별 설정
+                                    .neut(neut) // 중성화 여부 설정
+                                    .sfetrInfo(sfetrInfo) // 특징 정보 설정
+                                    .shterNm(shterNm) // 보호소 이름 설정
+                                    .shterTelno(shterTelno) // 보호소 전화번호 설정
+                                    .protectPlc(protectPlc) // 보호 장소 설정
+                                    .refineRoadnmAddr(refineRoadnmAddr) // 도로명 주소 설정
+                                    .refineLotnoAddr(refineLotnoAddr) // 지번 주소 설정
+                                    .refineZipCd(refineZipCd) // 우편번호 설정
+                                    .jurisdInstNm(jurisdInstNm) // 관할 기관명 설정
+                                    .chrgpsnNm(chrgpsnNm) // 담당자 이름 설정
+                                    .chrgpsnContctNo(chrgpsnContctNo) // 담당자 연락처 설정
+                                    .partclrMatr(partclrMatr) // 특이 사항 설정
+                                    .imageCours(imageCours) // 이미지 경로 설정
+                                    .thumbImageCours(thumbImageCours) // 썸네일 이미지 경로 설정
+                                    .lat(lat) // 위도 설정
+                                    .lon(lon) // 경도 설정
+                                    .build(); // DTO 빌드
 
-                            pList.add(pDTO);
+                            pList.add(pDTO); // DTO를 리스트에 추가
                         }
                     }
                 }
                 if (!hasRows) {
-                    hasMoreData = false;
+                    hasMoreData = false;  // "row" 항목이 없으면 더 이상 데이터가 없음을 표시
                 } else {
-                    pageNo++;
+                    pageNo++; // "row" 항목이 있으면 페이지 번호 증가
                 }
             } else {
-                hasMoreData = false;
+                hasMoreData = false; // "row" 키가 없으면 더 이상 데이터가 없음을 표시
             }
         }
 
