@@ -31,8 +31,6 @@ public class UserInfoService implements IUserInfoService {
 
         log.info(this.getClass().getName() + ".getUserIdExists 서비스 시작!");
 
-//        UserInfoDTO rDTO = Optional.ofNullable(userInfoMapper.getUserIdExists(pDTO))
-//                .orElseGet(() -> UserInfoDTO.builder().build());
         UserInfoDTO rDTO = userInfoMapper.getUserIdExists(pDTO);
 
         log.info(this.getClass().getName() + ".getUserIdExists 서비스 종료!");
