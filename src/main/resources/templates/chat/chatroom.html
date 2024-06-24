@@ -160,7 +160,11 @@
         return;
       }
 
-      ws = new WebSocket("ws://" + location.host + "/ws/" + roomName + "/" + nickname);
+      // Local 용
+      // ws = new WebSocket("ws://" + location.host + "/ws/" + roomName + "/" + nickname);
+
+      // 베포 용
+      ws = new WebSocket("wss://" + location.host + "/ws/" + roomName + "/" + nickname);
 
       ws.onopen = function (event) {
         if (event.data === undefined)
