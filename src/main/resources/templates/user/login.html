@@ -24,10 +24,14 @@
 
     <style>
 
-        a:hover {
-            text-decoration: none;
+        a {
+            color: grey;
+        }
+        .find:hover {
+            /*text-decoration: none;*/
             color: #AB4501;
             outline: none !important;
+            cursor: pointer; /* 커서 모양을 포인터로 변경 */
         }
 
         .botton {
@@ -46,7 +50,14 @@
             color: black;
             background-color: transparent;
             border-color: black;
+            cursor: pointer; /* 커서 모양을 포인터로 변경 */
         }
+
+        .btnNaver:hover {
+            cursor: pointer; /* 커서 모양을 포인터로 변경 */
+        }
+
+
 
         @media (max-width: 780px) {
             .botton {
@@ -129,7 +140,7 @@
         <div class="container">
             <div class="row no-gutters slider-text align-items-end">
                 <div class="col-md-9 ftco-animate pb-5">
-                    <p class="breadcrumbs mb-2"><span class="mr-2"><a href="index.html">Home <i
+                    <p class="breadcrumbs mb-2"><span class="mr-2"><a href="index">Home <i
                             class="ion-ios-arrow-forward"></i></a></span> <span>Contact <i
                             class="ion-ios-arrow-forward"></i></span></p>
                     <h1 class="mb-0 bread">Contact</h1>
@@ -197,10 +208,18 @@
 
                                             <div style="margin-top: 50px;">
                                             </div>
-                                            <!--네이버 로그인-->
+<!--                                            &lt;!&ndash;네이버 로그인 로컬&ndash;&gt;-->
+<!--                                            <div class="find-btn">-->
+<!--                                                <button type="button" id="btnNaver" class="btnNaver"-->
+<!--                                                        onclick="location.href='https://nid.naver.com/oauth2.0/authorize?client_id=yPocADTWLAL1M0tn1u71&response_type=code&redirect_uri=http://localhost:11000/auth/naver/callback&state=이리ON'"-->
+<!--                                                        style="border: none; background: none;">-->
+<!--                                                    <img src="/img/btnG_완성형.png" alt="네이버 로그인"-->
+<!--                                                         style="width: 50%; height: 1%; border-radius: 10px;"></button>-->
+<!--                                            </div>-->
+                                            <!--네이버 로그인 베포-->
                                             <div class="find-btn">
-                                                <button type="button" id="btnNaver"
-                                                        onclick="location.href='https://nid.naver.com/oauth2.0/authorize?client_id=yPocADTWLAL1M0tn1u71&response_type=code&redirect_uri=http://localhost:11000/auth/naver/callback&state=이리ON'"
+                                                <button type="button" id="btnNaver" class="btnNaver"
+                                                        onclick="location.href='https://nid.naver.com/oauth2.0/authorize?client_id=yPocADTWLAL1M0tn1u71&response_type=code&redirect_uri=https://www.irion.site/auth/naver/callback&state=이리ON'"
                                                         style="border: none; background: none;">
                                                     <img src="/img/btnG_완성형.png" alt="네이버 로그인"
                                                          style="width: 50%; height: 1%; border-radius: 10px;"></button>
