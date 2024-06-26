@@ -353,7 +353,7 @@ public class UserInfoController {
                 res = 1;
 
                 session.setAttribute("SS_USER_NAME", userName);
-                msg = rDTO.getUserName() + "님의 아이디는 " + rDTO.getUserId() + "입니다.";
+                msg = rDTO.getUserName() + "님의 아이디는   " + rDTO.getUserId() + "입니다.";
                 url = "/index";
             }
         } catch (Exception e) {
